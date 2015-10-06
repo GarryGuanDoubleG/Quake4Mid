@@ -80,6 +80,7 @@ protected:
 	} projectileFlags;
 
 	float					damagePower;
+	float					poisonDmg; // poison dmg
 
 	renderLight_t			renderLight;
 	qhandle_t				lightDefHandle;				// handle to renderer light def

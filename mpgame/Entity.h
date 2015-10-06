@@ -675,6 +675,9 @@ protected:
 // mekberg: added
 	void					Event_SetHealth					( float newHealth );
 // RAVEN END
+public:
+	float					poisonLevel;
+	void					Poison(float poinsonAmount);
 };
 
 // RAVEN BEGIN

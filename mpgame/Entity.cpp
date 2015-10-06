@@ -3614,7 +3614,10 @@ callback function for when another entity recieved damage from this entity.  dam
 void idEntity::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damage ) {
 	// implemented in subclasses
 }
-
+void idEntity::Poison(float poisonAmount)
+{
+	poisonLevel += poisonAmount;
+}
 /*
 ============
 Damage

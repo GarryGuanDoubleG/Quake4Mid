@@ -344,13 +344,14 @@ void idProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVec3 
 
  	// allow characters to throw projectiles during cinematics, but not the player
  	if ( owner.GetEntity() && !owner.GetEntity()->IsType( idPlayer::GetClassType() ) ) {
- 		cinematic = owner.GetEntity()->cinematic;
+ 		cinematic = ownenty()->cinematic;
  	} else {
  		cinematic = false;
  	} 
 
 	// Set the damage
 	damagePower = dmgPower;
+	poisonDmg = 1.5; 
 
 	if ( !spawnArgs.GetFloat( "speed", "0", temp ) ) {
 		spawnArgs.GetVector( "velocity", "0 0 0", tmp );
@@ -927,6 +928,8 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 			}	
 // RAVEN END
  			ent->Damage( this, owner, dir, damageDefName, damagePower, hitJoint );
+			ent->Poison(poisonDmg);
+
 			
 			if( owner && owner->IsType( idPlayer::GetClassType() ) && ent->IsType( idActor::GetClassType() ) ) {
 				statManager->WeaponHit( (const idActor*)(owner.GetEntity()), ent, methodOfDeath, hitCount == 0 );			
