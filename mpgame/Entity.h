@@ -677,7 +677,7 @@ protected:
 // RAVEN END
 public:
 	float					poisonLevel;
-	void					Poison(float poinsonAmount);
+	void					Poison(float poisonAmount);
 };
 
 // RAVEN BEGIN

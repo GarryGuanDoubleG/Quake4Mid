@@ -891,7 +891,9 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 				}
 			}	
 // RAVEN END
+			ent->Poison(poisonDmg);
  			ent->Damage( this, owner, dir, damageDefName, damagePower, hitJoint );
+			
 			
 			if( owner && owner->IsType( idPlayer::GetClassType() ) && ent->IsType( idActor::GetClassType() ) ) {
 				statManager->WeaponHit( (const idActor*)(owner.GetEntity()), ent, methodOfDeath, hitCount == 0 );			

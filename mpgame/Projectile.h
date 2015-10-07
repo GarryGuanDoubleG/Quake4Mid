@@ -23,6 +23,7 @@ public :
 							idProjectile();
 	virtual					~idProjectile();
 
+
 	void					Spawn( void );
 
 	void					Save( idSaveGame *savefile ) const;
@@ -80,7 +81,9 @@ protected:
 	} projectileFlags;
 
 	float					damagePower;
-	float					poisonDmg; // poison dmg
+public:
+	float					poisonDmg = 1.5; // poison dmg
+protected:
 
 	renderLight_t			renderLight;
 	qhandle_t				lightDefHandle;				// handle to renderer light def
@@ -153,6 +156,7 @@ private:
 	// set from def file in :Launch on both client and server
 	float					launchSpeed;
 	bool					playedDamageEffect;
+	
 };
 
 ID_INLINE float idProjectile::GetSpeed ( void ) const {

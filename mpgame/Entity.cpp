@@ -3617,6 +3617,7 @@ void idEntity::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damag
 void idEntity::Poison(float poisonAmount)
 {
 	poisonLevel += poisonAmount;
+	common->Printf("poison level is now %f\n", poisonLevel);
 }
 /*
 ============
