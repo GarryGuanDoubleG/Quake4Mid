@@ -2838,7 +2838,7 @@ void rvWeapon::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const id
 			msg.WriteDir( dir, 24 );
 			if ( i == num_hitscans - 1 ) {
 				// NOTE: we emit to the areas of the last hitscan
-				// there is a remote possibility that multiple hitscans for shotgun would cover more than 2 areas,
+				// there is a remote tr that multiple hitscans for shotgun would cover more than 2 areas,
 				// so in some rare case a client might miss it
 				gameLocal.SendUnreliableMessagePVS( msg, owner, areas[0], areas[1] );
 			}
