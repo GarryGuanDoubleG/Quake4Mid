@@ -39,6 +39,11 @@ public :
 
 	idEntity *				GetOwner( void ) const;
 
+//DoubleG Swag Garry Edits
+	idVec3					new_vel;
+	bool					isRocket;
+	virtual void			RocketThink( void );
+//END Double G 
 	virtual void			Think( void );
 	virtual void			Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 	virtual bool			GetPhysicsToVisualTransform( idVec3 &origin, idMat3 &axis );

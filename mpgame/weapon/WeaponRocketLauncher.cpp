@@ -237,6 +237,7 @@ void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
 	// Launch the projectile
 	idEntityPtr<idEntity> ptr;
 	ptr = proj;
+	proj->isRocket = true;
 	guideEnts.Append ( ptr );	
 }
 
