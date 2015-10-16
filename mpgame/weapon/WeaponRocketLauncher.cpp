@@ -12,6 +12,15 @@
 class rvWeaponRocketLauncher : public rvWeapon {
 public:
 
+	//Double G Swag Edit(Garry)
+	//follow used to make rocket orbit player after certain distance
+	idVec3								playerLocation;
+	idVec3								playerAngle;
+	idVec3								projDistance;
+	idVec3								projOrbitVel;
+	int									rateOfOrbit;
+	//end Double G Swag
+
 	CLASS_PROTOTYPE( rvWeaponRocketLauncher );
 
 	rvWeaponRocketLauncher ( void );
@@ -24,6 +33,12 @@ public:
 	void					Restore( idRestoreGame *saveFile );
 	void					PreSave				( void );
 	void					PostSave			( void );
+	//Double G Swag Garry
+	//getting player origin
+	void				LaunchProjectiles			( idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_projectiles, float spread, float fuseOffset, float power );
+	void				Hitscan						( const idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_hitscans, float spread, float power );
+	
+	//End Double G Swag			
 
 
 #ifdef _XENON
@@ -212,6 +227,7 @@ rvWeaponRocketLauncher::OnLaunchProjectile
 */
 void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
 	rvWeapon::OnLaunchProjectile(proj);
+	common->Printf(" **OnLaunchRocket**\n  ");
 
 	// Double check that its actually a guided projectile
 	if ( !proj || !proj->IsType ( idGuidedProjectile::GetClassType() ) ) {
@@ -223,6 +239,24 @@ void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
 	ptr = proj;
 	guideEnts.Append ( ptr );	
 }
+
+//Double G Swag
+void rvWeaponRocketLauncher::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_hitscans, float spread, float power ) {
+	rvWeapon::Hitscan(dict, muzzleOrigin, muzzleAxis, num_hitscans, spread, power );
+	common->Printf("__________________Rocket HitScan_______________\n");
+
+}
+
+void rvWeaponRocketLauncher::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_projectiles, float spread, float fuseOffset, float power )
+{
+	rvWeapon::LaunchProjectiles(dict, muzzleOrigin, muzzleAxis, num_projectiles, spread, fuseOffset,power );
+	common->Printf("&&&&&LaunchProjectile&&&&&&&&&&&&\n");
+
+	playerLocation = muzzleOrigin;
+	common->Printf("&&&&&PlayerX:%f Y:%f Z:%f \n",playerLocation.x, playerLocation.y, playerLocation.z);
+
+}
+//End Double G Swag
 
 /*
 ================

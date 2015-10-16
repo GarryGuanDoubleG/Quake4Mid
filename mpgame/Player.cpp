@@ -9300,7 +9300,6 @@ Called every tic for each player
 ==============
 */
 void idPlayer::Think( void ){
-	for(int i = 0; i < 5; i++)common->Printf("Hello World");
 
 	renderEntity_t *headRenderEnt;
 
