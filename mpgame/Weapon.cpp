@@ -2620,6 +2620,7 @@ void rvWeapon::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, con
 	idVec3			dir;
 	idBounds		ownerBounds;
 
+
 	if ( gameLocal.isClient ) {
 		return;
 	}
@@ -2674,7 +2675,9 @@ void rvWeapon::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, con
 		// Create the projectile
 		proj = static_cast<idProjectile*>(ent);
 		proj->Create( owner, muzzleOrigin + startOffset, dir, NULL, owner->extraProjPassEntity );
-
+		//Double G Swag
+		proj->isRocket = false;
+		//END
 		projBounds = proj->GetPhysics()->GetBounds().Rotate( proj->GetPhysics()->GetAxis() );
 
 		// make sure the projectile starts inside the bounding box of the owner
@@ -2708,7 +2711,6 @@ void rvWeapon::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, con
 		
 		// Launch the actual projectile
 		proj->Launch( muzzle_pos + startOffset, dir, pushVelocity, fuseOffset, power );
-		
 		// Increment the projectile launch count and let the derived classes
 		// mess with it if they want.
 		OnLaunchProjectile ( proj );
@@ -2721,6 +2723,8 @@ rvWeapon::OnLaunchProjectile
 ================
 */
 void rvWeapon::OnLaunchProjectile ( idProjectile* proj ) {
+	//Double G Swag 
+	//END
 	owner->AddProjectilesFired( 1 );
 	if ( proj ) {
 		proj->methodOfDeath = owner->GetCurrentWeapon();

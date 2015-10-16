@@ -40,8 +40,9 @@ public :
 	idEntity *				GetOwner( void ) const;
 
 //DoubleG Swag Garry Edits
-	idVec3					new_vel;
 	bool					isRocket;
+	float						RotationStep;
+	float						Rotation;
 	virtual void			RocketThink( void );
 //END Double G 
 	virtual void			Think( void );

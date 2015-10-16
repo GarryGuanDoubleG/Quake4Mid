@@ -254,6 +254,11 @@ void idProjectile::Create( idEntity* _owner, const idVec3 &start, const idVec3 &
 	idVec3		tmp;
 	idMat3		axis;
 	
+	//DOUBLE G SWAG
+	RotationStep = 10.0/360.0;
+	Rotation	 = 0.0;
+
+	//END
 	Unbind();
 
 	axis = dir.ToMat3();
@@ -535,7 +540,9 @@ idProjectile::Think
 void idProjectile::Think( void ) {
 	// run physics
 	if(isRocket){
+		common->Printf("Calling RocketThink()\n");
 		RocketThink();
+		common->Printf("RocketThink() END\n");
 		return;
 	}
 	if ( thinkFlags & TH_PHYSICS ) {
@@ -622,40 +629,27 @@ idProjectile::rocketThink
 			//vel.Normalize ( );
 
 			idVec3 new_pos;
+			idVec3 new_vel;
 			new_pos.Zero();
 			idVec3 playerLocation;
 			idVec3 rocketLocation;
 			idMat3 playerAxis;
 			idMat3	rocketAxis;
+			float radius = 200.0;
 
 			owner->GetPosition(playerLocation,playerAxis);
-			this->GetPosition(rocketLocation, rocketAxis);
-
-			if(playerLocation.DistXY(rocketLocation) >= 200){
-/*
-				idVec3 dir = rocketLocation - playerLocation;
-				dir.z = 0;
-				dir.Normalize();
-				common->Printf("\nGuided Dir is %f%f%f \n",dir.x, dir.y, dir.z);
-				playerDir.Normalize();
-				common->Printf("\nGuided Dir is %f%f%f \n",playerDir.x, playerDir.y, playerDir.z);
-
-
-				float radius = 200 ;
-				new_pos.x = new_pos.x*cos(rateOfOrbit*(2*M_PI*200/proj->GetSpeed())) * 200;
-				new_pos.y = new_pos.y*sin(rateOfOrbit*(2*M_PI*200/proj->GetSpeed())) * 200;
-
-				common->Printf("\nPeriod * rate of Orbit is %d", rateOfOrbit*(2*M_PI*200/proj->GetSpeed()));
-				rateOfOrbit++;
-
-				new_pos += playerLocation;
-				common->Printf("\nGuided Dir is %f%f%f \n",new_pos.x, new_pos.y, new_pos.z);
-
-				proj->GuideTo(new_pos);
-
-				//////////////////////////////////////////////////////////
-				new_vel->Normalize( );
-				physicsObj.SetLinearVelocity ( speed.GetCurrentValue ( gameLocal.time ) * (*new_vel) );	
+			//200 is radius
+			if(playerLocation.DistXY(rocketLocation) >= radius){
+				
+				this->GetPosition(rocketLocation, rocketAxis);
+				Rotation += RotationStep;
+				new_pos.x = radius* cos(Rotation) + playerLocation.x;
+				new_pos.y = radius* sin(Rotation) + playerLocation.y;
+				new_pos.z = playerLocation.z + 50;
+				common->Printf("New Pos is %f%f%f", new_pos.x,new_pos.y,new_pos.z);
+				new_vel = new_pos - rocketLocation;
+				common->Printf("New Pos is %f%f%f", new_vel.x,new_vel.y,new_vel.z);
+				physicsObj.SetLinearVelocity ( new_vel );	
 			}
 			/*if ( speed.IsDone ( gameLocal.time ) ) {
 				updateVelocity = false;
@@ -717,7 +711,7 @@ idProjectile::rocketThink
 		}
 	}
 }
- }
+ 
 /*
 
 
