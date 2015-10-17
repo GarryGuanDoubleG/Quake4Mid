@@ -8427,6 +8427,9 @@ void idPlayer::PerformImpulse( int impulse ) {
 
 	switch( impulse ) {
 		case IMPULSE_13: {
+			//Double G Swag Edit
+			common->Printf("MPGAME RELOAD");
+			//END
 			Reload();
 			break;
 		}

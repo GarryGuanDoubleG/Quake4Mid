@@ -33,12 +33,6 @@ public:
 protected:
 
 	virtual void			OnLaunchProjectile	( idProjectile* proj );
-	//Double G Swag Garry
-	//getting player origin
-	void				LaunchProjectiles			( idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_projectiles, float spread, float fuseOffset, float power );
-	void				Hitscan						( const idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_hitscans, float spread, float power );
-	//End Double G Swag
-
 	void					SetRocketState		( const char* state, int blendFrames );
 
 	rvClientEntityPtr<rvClientEffect>	guideEffect;
@@ -54,14 +48,6 @@ protected:
 
 	bool								idleEmpty;
 
-	//Double G Swag Edit(Garry)
-	//follow used to make rocket orbit player after certain distance
-	idVec3								playerLocation;
-	idVec3								playerAngle;
-	idVec3								projDistance;
-	idVec3								projOrbitVel;
-	int									rateOfOrbit;
-	//end Double G Swag
 private:
 
 	stateResult_t		State_Idle				( const stateParms_t& parms );

@@ -8474,6 +8474,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 
 	switch( impulse ) {
 		case IMPULSE_13: {
+			common->Printf("Weapon Reloading\n");
 			Reload();
 			break;
 		}
@@ -8547,7 +8548,13 @@ void idPlayer::PerformImpulse( int impulse ) {
    			}
    			break;
    		}
-				
+		//DOUBLE G SWAG EDIT
+		//Binding I to HUD
+		case IMPULSE_23: {
+			common->Printf("Pressed I\n");
+			break;
+		}
+								
 		case IMPULSE_28: {
  			if ( gameLocal.isClient || entityNumber == gameLocal.localClientNum ) {
  				gameLocal.mpGame.CastVote( gameLocal.localClientNum, true );

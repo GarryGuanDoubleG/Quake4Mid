@@ -2723,8 +2723,7 @@ rvWeapon::OnLaunchProjectile
 ================
 */
 void rvWeapon::OnLaunchProjectile ( idProjectile* proj ) {
-	//Double G Swag 
-	//END
+
 	owner->AddProjectilesFired( 1 );
 	if ( proj ) {
 		proj->methodOfDeath = owner->GetCurrentWeapon();
