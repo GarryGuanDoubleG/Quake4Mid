@@ -64,6 +64,14 @@ public :
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 
 	virtual bool			ClientStale( void );
+
+	//Double G Swag Garry Start
+	//adding orbital rockets
+	bool					isRocket;
+	float					RotationStep;
+	float					Rotation;
+	virtual void			RocketThink( void );
+	//END
 	
 protected:
 	void					SpawnImpactEntities(const trace_t& collision, const idVec3 projectileDirection);

@@ -245,6 +245,13 @@ void idProjectile::Create( idEntity* _owner, const idVec3 &start, const idVec3 &
 	idVec3		light_offset;
 	idVec3		tmp;
 	idMat3		axis;
+
+		
+	//DOUBLE G SWAG
+	RotationStep = 10.0/360.0;
+	Rotation	 = 0.0;
+
+	//END
 	
 	Unbind();
 
@@ -518,6 +525,15 @@ idProjectile::Think
 */
 void idProjectile::Think( void ) {
 	// run physics
+		//Double G Swag call RocketThink()
+	if(isRocket){
+		common->Printf("Calling RocketThink()\n");
+		RocketThink();
+		common->Printf("RocketThink() END\n");
+		return;
+	}
+	//END
+
 	if ( thinkFlags & TH_PHYSICS ) {
 
 		// Update the velocity to match the changing speed
@@ -585,6 +601,106 @@ void idProjectile::Think( void ) {
 		}
 	}
 }
+
+/*
+================
+Double G Swag Garry
+idProjectile::rocketThink
+================
+*/
+ void idProjectile::RocketThink(void){
+
+
+		// Update the velocity to match the changing speed
+		//if ( updateVelocity ) {
+			//idVec3 vel;
+			//vel = physicsObj.GetLinearVelocity ( );
+			//vel.Normalize ( );
+
+			idVec3 new_pos;
+			idVec3 new_vel;
+			new_pos.Zero();
+			idVec3 playerLocation;
+			idVec3 rocketLocation;
+			idMat3 playerAxis;
+			idMat3	rocketAxis;
+			float radius = 200.0;
+
+			owner->GetPosition(playerLocation,playerAxis);
+			//200 is radius
+			if(playerLocation.DistXY(rocketLocation) >= radius){
+				
+				this->GetPosition(rocketLocation, rocketAxis);
+				Rotation += RotationStep;
+				new_pos.x = radius* cos(Rotation) + playerLocation.x;
+				new_pos.y = radius* sin(Rotation) + playerLocation.y;
+				new_pos.z = playerLocation.z + 50;
+				common->Printf("New Pos is %f%f%f", new_pos.x,new_pos.y,new_pos.z);
+				new_vel = new_pos - rocketLocation;
+				common->Printf("New Pos is %f%f%f", new_vel.x,new_vel.y,new_vel.z);
+				physicsObj.SetLinearVelocity ( new_vel );	
+			}
+			/*if ( speed.IsDone ( gameLocal.time ) ) {
+				updateVelocity = false;
+			}*/
+	//	}
+		if ( thinkFlags & TH_PHYSICS ) {
+
+		RunPhysics();
+		
+		// If we werent at rest and are now then start the atrest fuse
+		if ( physicsObj.IsAtRest( ) ) {
+			float fuse = spawnArgs.GetFloat( "fuse_atrest" );
+			if ( fuse > 0.0f ) {
+				if ( spawnArgs.GetBool( "detonate_on_fuse" ) ) {
+					CancelEvents( &EV_Explode );
+					PostEventSec( &EV_Explode, fuse );
+				} else {
+					CancelEvents( &EV_Fizzle );
+					PostEventSec( &EV_Fizzle, fuse );
+				}
+			}
+		}
+
+		// Stop the trail effect if the physics flag was removed
+		if ( flyEffect && flyEffectAttenuateSpeed > 0.0f ) {
+			if ( physicsObj.IsAtRest( ) ) {
+				flyEffect->Stop( );
+				flyEffect = NULL;				
+			} else {
+				float speed;
+				speed = idMath::ClampFloat( 0, flyEffectAttenuateSpeed, physicsObj.GetLinearVelocity ( ).LengthFast ( ) );
+				flyEffect->Attenuate( speed / flyEffectAttenuateSpeed );
+			}
+		}
+
+		UpdateVisualAngles();
+	}
+		
+	Present();
+
+	// add the light
+ 	if ( renderLight.lightRadius.x > 0.0f && g_projectileLights.GetBool() ) {
+		renderLight.origin = GetPhysics()->GetOrigin() + GetPhysics()->GetAxis() * lightOffset;
+		renderLight.axis = GetPhysics()->GetAxis();
+		if ( ( lightDefHandle != -1 ) ) {
+			if ( lightEndTime > 0 && gameLocal.time <= lightEndTime + gameLocal.GetMSec() ) {
+				idVec3 color( 0, 0, 0 );
+				if ( gameLocal.time < lightEndTime ) {
+					float frac = ( float )( gameLocal.time - lightStartTime ) / ( float )( lightEndTime - lightStartTime );
+					color.Lerp( lightColor, color, frac );
+				} 
+				renderLight.shaderParms[SHADERPARM_RED] = color.x;
+				renderLight.shaderParms[SHADERPARM_GREEN] = color.y;
+				renderLight.shaderParms[SHADERPARM_BLUE] = color.z;
+			} 
+			gameRenderWorld->UpdateLightDef( lightDefHandle, &renderLight );
+		} else {
+			lightDefHandle = gameRenderWorld->AddLightDef( &renderLight );
+		}
+	}
+}
+ //DOUBLE G END
 
 /*
 =================

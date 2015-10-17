@@ -539,12 +539,15 @@ idProjectile::Think
 */
 void idProjectile::Think( void ) {
 	// run physics
+
+	//Double G Swag call RocketThink()
 	if(isRocket){
 		common->Printf("Calling RocketThink()\n");
 		RocketThink();
 		common->Printf("RocketThink() END\n");
 		return;
 	}
+	//END
 	if ( thinkFlags & TH_PHYSICS ) {
 
 		// Update the velocity to match the changing speed
@@ -711,7 +714,7 @@ idProjectile::rocketThink
 		}
 	}
 }
- 
+ //DOUBLE G END
 /*
 
 

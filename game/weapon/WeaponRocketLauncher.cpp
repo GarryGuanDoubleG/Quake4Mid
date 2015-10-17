@@ -224,7 +224,10 @@ rvWeaponRocketLauncher::OnLaunchProjectile
 ================
 */
 void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
+	//Double G Swag Edit
+	proj->isRocket = true;
 	rvWeapon::OnLaunchProjectile(proj);
+	//END
 
 	// Double check that its actually a guided projectile
 	if ( !proj || !proj->IsType ( idGuidedProjectile::GetClassType() ) ) {
@@ -238,19 +241,7 @@ void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
 }
 
 
-//Double G Swag
-void rvWeaponRocketLauncher::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_hitscans, float spread, float power ) {
-	rvWeapon::Hitscan(dict, muzzleOrigin, muzzleAxis, num_hitscans, spread, power );
-	common->Printf("Launch Projectiles Rocket HitScan");
 
-}
-
-void rvWeaponRocketLauncher::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, const idMat3& muzzleAxis, int num_projectiles, float spread, float fuseOffset, float power )
-{
-	rvWeapon::LaunchProjectiles(dict, muzzleOrigin, muzzleAxis, num_projectiles, spread, fuseOffset,power );
-	common->Printf("Launch Projectile Rocket Launcher");
-}
-//End Double G Swag
 
 /*
 ================
