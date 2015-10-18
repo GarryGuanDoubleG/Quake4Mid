@@ -296,6 +296,10 @@ void idProjectile::Create( idEntity* _owner, const idVec3 &start, const idVec3 &
  	UpdateVisuals();
 
 	state = CREATED;
+
+	//DOUBLE G Swag EDIT
+	isRocket = false;
+	//END
 }
 
 /*
@@ -527,9 +531,7 @@ void idProjectile::Think( void ) {
 	// run physics
 		//Double G Swag call RocketThink()
 	if(isRocket){
-		common->Printf("Calling RocketThink()\n");
 		RocketThink();
-		common->Printf("RocketThink() END\n");
 		return;
 	}
 	//END
@@ -617,27 +619,26 @@ idProjectile::rocketThink
 			//vel = physicsObj.GetLinearVelocity ( );
 			//vel.Normalize ( );
 
-			idVec3 new_pos;
-			idVec3 new_vel;
-			new_pos.Zero();
 			idVec3 playerLocation;
-			idVec3 rocketLocation;
 			idMat3 playerAxis;
+			idVec3 rocketLocation;
 			idMat3	rocketAxis;
 			float radius = 200.0;
 
 			owner->GetPosition(playerLocation,playerAxis);
+			this->GetPosition(rocketLocation, rocketAxis);
 			//200 is radius
 			if(playerLocation.DistXY(rocketLocation) >= radius){
 				
-				this->GetPosition(rocketLocation, rocketAxis);
+				idVec3 new_pos;
+				idVec3 new_vel;
+				new_pos.Zero();
+
 				Rotation += RotationStep;
 				new_pos.x = radius* cos(Rotation) + playerLocation.x;
 				new_pos.y = radius* sin(Rotation) + playerLocation.y;
 				new_pos.z = playerLocation.z + 50;
-				common->Printf("New Pos is %f%f%f", new_pos.x,new_pos.y,new_pos.z);
 				new_vel = new_pos - rocketLocation;
-				common->Printf("New Pos is %f%f%f", new_vel.x,new_vel.y,new_vel.z);
 				physicsObj.SetLinearVelocity ( new_vel );	
 			}
 			/*if ( speed.IsDone ( gameLocal.time ) ) {

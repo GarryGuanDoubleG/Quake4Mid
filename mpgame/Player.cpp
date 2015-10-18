@@ -3529,6 +3529,7 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 	_hud->StateChanged( gameLocal.time );
 }
 
+
 void idPlayer::DrawInput()
 {
 	const idVec4 highlightColor(1.0f, 0.0f, 0.0f, 0.8f);

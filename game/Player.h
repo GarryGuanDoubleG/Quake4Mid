@@ -639,6 +639,12 @@ public:
 #ifdef _XENON
 	void					ResetHUDWeaponSwitch( void );
 #endif
+	//Double G Swag 
+	//Adding I Key Event
+	bool					pressed_I;
+	bool					showInv;
+	void					PressI( idUserInterface *hud );
+	//END
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );
  	void					ShowTip( const char *title, const char *tip, bool autoHide );

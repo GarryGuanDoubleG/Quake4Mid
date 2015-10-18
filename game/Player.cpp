@@ -1494,7 +1494,10 @@ idPlayer::Init
 */
 void idPlayer::Init( void ) {
 	const char			*value;
-	
+	//DOUBLE G SWAG Pressed I set to False
+	pressed_I				= false;
+	showInv					= false;
+	//END
 	noclip					= false;
 	godmode					= false;
 	godmodeDamage			= 0;
@@ -3438,6 +3441,22 @@ void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 
 /*
 ===============
+DOUBLE G SWAG: Press_I
+===============
+*/
+void idPlayer::PressI( idUserInterface *hud ){
+
+	if(this->pressed_I == true){
+		common->Printf(" Press I is true and calling Handle Event Pressed_I\n");
+		this->showInv = !(this->showInv);
+		hud->HandleNamedEvent( "Pressed_I");
+		this->pressed_I = false;
+	}
+	
+} 
+
+/*
+===============
 idPlayer::UpdateHudWeapon
 ===============
 */
@@ -3731,8 +3750,13 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 				cursor->Redraw( gameLocal.time );
 			}
 		}	
+		//Double G Swag Start
+		//Adding  Key I event to make inventory visible
+		PressI(_hud);
+		//END
 
 		UpdateHudStats( _hud );
+		
 
 		if ( focusBrackets ) {
 			// If 2d_calc is still true then the gui didnt render so we can abandon it
@@ -8552,6 +8576,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		//Binding I to HUD
 		case IMPULSE_23: {
 			common->Printf("Pressed I\n");
+			pressed_I = true;
 			break;
 		}
 								
