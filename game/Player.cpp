@@ -7367,6 +7367,7 @@ idPlayer::SetFocus
 ================
 */
 void idPlayer::SetFocus ( playerFocus_t newType, int _focusTime, idEntity* newEnt, idUserInterface* newUI ) {
+
 	const char* command;
 
 	// Handle transitions from one user interface to another or to none
@@ -7415,9 +7416,11 @@ void idPlayer::SetFocus ( playerFocus_t newType, int _focusTime, idEntity* newEn
 				cursor->HandleNamedEvent ( "showCrossVehicleLocked" );
 				break;
 			case FOCUS_USABLE:
+				common->Printf("Activating / Deactivating CrossUsable\n");
 				cursor->HandleNamedEvent ( "showCrossUsable" );
 				break;
 			case FOCUS_GUI:
+				common->Printf("Activating / Deactivating CrossGui\n");
 				cursor->HandleNamedEvent ( "showCrossGui" );
 				break;
 			case FOCUS_CHARACTER:

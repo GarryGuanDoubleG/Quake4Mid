@@ -7295,6 +7295,7 @@ idPlayer::ClearFocus
 ================
 */
 void idPlayer::ClearFocus ( void ) {
+	common->Printf("Clear Focus\n");
 	SetFocus ( FOCUS_NONE, 0, NULL, NULL );
 }
 
