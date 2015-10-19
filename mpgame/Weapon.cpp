@@ -551,6 +551,7 @@ void rvWeapon::TurretInit( idPlayer* _owner, const idDeclEntityDef* def, int _we
    	
    	// Associate the weapon with the view model
 	viewModel->weapon = this;
+
 }
 /*
 ================

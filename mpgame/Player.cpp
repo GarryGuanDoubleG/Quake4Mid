@@ -8509,13 +8509,14 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_24:{
 			common->Printf("Impulse 24, calling def stuff\n");
 			idTypeInfo*	typeInfo;
-			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeapon" ) );
+			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeaponRocket" ) );
 
 			weaponDef = GetWeaponDef( 10 );//10 = rocketlauncher weapon index...i think?
 			int currentWeapon = 10;
 
 			weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
 			weapon->TurretInit( this, weaponDef, currentWeapon, isStrogg );
+			weapon->isTurret = true;
 			weapon->CallSpawn( );
 			break;
 		}
