@@ -3752,6 +3752,20 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 		}	
 		//Double G Swag Start
 		//Adding  Key I event to make inventory visible
+		if(showInv){
+			RouteGuiMouse(_hud);
+			common->Printf("Calling Cross Hide ");
+			cursor->HandleNamedEvent("crossHide");
+			const char*	command;
+			common->Printf("Setting EV \n");
+			sysEvent_t	ev;
+			ev = sys->GenerateMouseMoveEvent( SCREEN_WIDTH/2, SCREEN_HEIGHT/2 );
+			common->Printf("calling handle mouse event");
+			command = _hud->HandleEvent( &ev, gameLocal.time );
+			common->Printf("calling Handle Gui Commands");
+  			HandleGuiCommands( this, command );
+		}
+
 		PressI(_hud);
 		//END
 
@@ -8580,6 +8594,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_23: {
 			common->Printf("Pressed I\n");
 			pressed_I = true;
+			showInv = true;
 			break;
 		}
 								
@@ -9518,6 +9533,8 @@ void idPlayer::Think( void ) {
 	// we turn the mouse movements into gui events
 	idUserInterface *gui = ActiveGui();
 	if ( gui && gui != focusUI ) {
+		//Double G Swag Edit
+		common->Printf("Does player still think in menu?");
 		RouteGuiMouse( gui );
 	}
 
