@@ -8507,9 +8507,16 @@ void idPlayer::PerformImpulse( int impulse ) {
    		}
 		//Double G SWAG EDIT
 		case IMPULSE_24:{
-				weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
-				weapon->Init( this, weaponDef, currentWeapon, isStrogg );
-				weapon->CallSpawn( );
+			common->Printf("Impulse 24, calling def stuff\n");
+			idTypeInfo*	typeInfo;
+			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeapon" ) );
+
+			weaponDef = GetWeaponDef( 10 );//10 = rocketlauncher weapon index...i think?
+			int currentWeapon = 10;
+
+			weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
+			weapon->TurretInit( this, weaponDef, currentWeapon, isStrogg );
+			weapon->CallSpawn( );
 			break;
 		}
 				
