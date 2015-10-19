@@ -8597,6 +8597,21 @@ void idPlayer::PerformImpulse( int impulse ) {
 			showInv = true;
 			break;
 		}
+		case IMPULSE_24:{
+			common->Printf("Pressed Impulse 24\n");
+			
+			idTypeInfo*	typeInfo;
+			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeaponRocket" ) );
+
+			weaponDef = GetWeaponDef( 10 );//10 = rocketlauncher weapon index...i think?
+			int currentWeapon = 10;
+
+			weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
+			weapon->TurretInit( this, weaponDef, currentWeapon, isStrogg );
+			weapon->isTurret = true;
+			weapon->CallSpawn( ); 
+			break;
+		}
 								
 		case IMPULSE_28: {
  			if ( gameLocal.isClient || entityNumber == gameLocal.localClientNum ) {

@@ -8508,6 +8508,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		//Double G SWAG EDIT
 		case IMPULSE_24:{
 			common->Printf("Impulse 24, calling def stuff\n");
+			/*
 			idTypeInfo*	typeInfo;
 			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeaponRocket" ) );
 
@@ -8517,7 +8518,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 			weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
 			weapon->TurretInit( this, weaponDef, currentWeapon, isStrogg );
 			weapon->isTurret = true;
-			weapon->CallSpawn( );
+			weapon->CallSpawn( ); */
 			break;
 		}
 				

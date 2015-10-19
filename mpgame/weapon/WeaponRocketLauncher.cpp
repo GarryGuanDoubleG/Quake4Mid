@@ -99,6 +99,7 @@ void rvWeaponRocketLauncher::Spawn ( void ) {
 
 	if(isTurret){
 		TurretSpawn( );
+		return;
 	}
 
 	idleEmpty = false;
@@ -266,6 +267,7 @@ void rvWeaponRocketLauncher::TurretThink( void ){
 		}
 	}
 }
+//DOUBLE G END
 
 /*
 ================
