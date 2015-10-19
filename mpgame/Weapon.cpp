@@ -510,7 +510,48 @@ rvWeapon::~rvWeapon( void ) {
 		viewModel->weapon = NULL;
 	}
 }
+//DOUBLE G SWAG
+void rvWeapon::TurretInit( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg ) {
+	int i;
 
+	viewModel		= _owner->GetWeaponViewModel( );
+	worldModel		= _owner->GetWeaponWorldModel( );
+	weaponDef		= def; 
+	owner			= _owner;
+	scriptObject	= &viewModel->scriptObject;
+	weaponIndex 	= _weaponIndex;
+	mods			= owner->inventory.weaponMods[ weaponIndex ];
+	isStrogg		= _isStrogg;
+	
+	spawnArgs = weaponDef->dict;
+
+#ifdef _XENON
+	aimAssistFOV = spawnArgs.GetFloat( "aimAssistFOV", "10.0f" );
+#endif	
+
+	// Apply the mod dictionaries
+	for ( i = 0; i < MAX_WEAPONMODS; i ++ ) {		
+		const idDict* modDict;
+		if ( !(mods & (1<<i) ) ) {
+			continue;
+		}
+
+		const char* mod;
+		if ( !spawnArgs.GetString ( va("def_mod%d", i+1), "", &mod ) || !*mod ) { 
+			continue;
+		}
+		
+		modDict = gameLocal.FindEntityDefDict ( mod, false );
+		if ( !modDict ) {
+			continue;
+		}
+		
+		spawnArgs.Copy ( *modDict );
+   	}
+   	
+   	// Associate the weapon with the view model
+	viewModel->weapon = this;
+}
 /*
 ================
 rvWeapon::Init
@@ -529,6 +570,10 @@ void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIn
 	isStrogg		= _isStrogg;
 	
 	spawnArgs = weaponDef->dict;
+
+	if(isTurret){
+		TurretInit(_owner, idDeclEntityDef* def, _weaponIndex,_isStrogg);
+	}
 
 #ifdef _XENON
 	aimAssistFOV = spawnArgs.GetFloat( "aimAssistFOV", "10.0f" );

@@ -127,7 +127,9 @@ public:
 		EVENT_CHANGESKIN,
 		EVENT_MAXEVENTS
 	};
-	
+	//DOUBLE G SWAG Begin
+	void				TurretInit					( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg = false );
+	//END
 	void				Init						( idPlayer* _owner, const idDeclEntityDef* def, int weaponIndex, bool isStrogg = false );
 
 	// Virtual overrides

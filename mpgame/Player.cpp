@@ -8505,6 +8505,13 @@ void idPlayer::PerformImpulse( int impulse ) {
    			}
    			break;
    		}
+		//Double G SWAG EDIT
+		case IMPULSE_24:{
+				weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
+				weapon->Init( this, weaponDef, currentWeapon, isStrogg );
+				weapon->CallSpawn( );
+			break;
+		}
 				
 		case IMPULSE_28: {
  			if ( gameLocal.isClient || entityNumber == gameLocal.localClientNum ) {

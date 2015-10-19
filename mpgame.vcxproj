@@ -370,7 +370,6 @@
     <ClCompile Include="mpgame\mp\stats\StatEvent.cpp" />
     <ClCompile Include="mpgame\mp\stats\StatManager.cpp" />
     <ClCompile Include="mpgame\mp\stats\StatWindow.cpp" />
-    <ClCompile Include="WeaponTurret.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mpgame\Actor.h" />

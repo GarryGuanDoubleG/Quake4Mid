@@ -1424,7 +1424,7 @@ void idClass::RegisterClasses( void )
 	REGISTER(rvWeaponRocketLauncher); // ..\..\code\game\weapon\WeaponRocketLauncher.cpp
 	REGISTER(rvWeaponShotgun); // ..\..\code\game\weapon\WeaponShotgun.cpp
 	//Double G Swag BEGIN
-	REGISTER(rvWeaponTurret); // ..\..\code\game\weapon\WeaponTurret.cpp
+//	REGISTER(rvWeaponTurret); // ..\..\code\game\weapon\WeaponRocketLauncher.cpp
 // RITUAL BEGIN
 	REGISTER(riDeadZonePowerup); // ..\..\code\game\Item.cpp
 	REGISTER(WeaponNapalmGun);	// ..\..\code\game\weapon\WeaponNapalmGun.cpp

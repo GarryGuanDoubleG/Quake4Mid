@@ -86,6 +86,7 @@ public:
 
 	virtual void			GetPosition					( idVec3& origin, idMat3& axis ) const;
 
+
 private:
 
 	idStrList				pendingGUIEvents;
@@ -127,7 +128,12 @@ public:
 		EVENT_CHANGESKIN,
 		EVENT_MAXEVENTS
 	};
-	
+	//DOUBLE G SWAG EDIT
+	bool				isTurret;
+	//DOUBLE G SWAG Begin
+	void				TurretInit					( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg = false );
+	//END	
+
 	void				Init						( idPlayer* _owner, const idDeclEntityDef* def, int weaponIndex, bool isStrogg = false );
 
 	// Virtual overrides

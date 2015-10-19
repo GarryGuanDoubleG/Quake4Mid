@@ -586,8 +586,331 @@ stateResult_t rvWeaponRocketLauncher::Frame_AddToClip ( const stateParms_t& parm
 	return SRESULT_OK;
 }
 
-class rvWeaponTurret : rvWeaponRocketLauncher{
+
+
+//DOUBLE G SWAG EDIT
+class rvWeaponTurret : public rvWeaponRocketLauncher{
 
 	CLASS_PROTOTYPE( rvWeaponTurret );
 
+	
+	rvWeaponTurret ( void );
+	~rvWeaponTurret ( void );
+public:
+
+	idVec3					location;
+
+	virtual void			Spawn				( void );
+	virtual void			Think				( void );
+	void					ThinkWeapon			( void );
+
+	void					Save( idSaveGame *saveFile ) const;
+	void					Restore( idRestoreGame *saveFile );
+	void					PreSave				( void );
+	void					PostSave			( void );	
+
+
+#ifdef _XENON
+	virtual bool		AllowAutoAim			( void ) const { return false; }
+#endif
+
+protected:
+
+	virtual void			OnLaunchProjectile	( idProjectile* proj );
+
+	void					SetRocketState		( const char* state, int blendFrames );
+
+	rvClientEntityPtr<rvClientEffect>	guideEffect;
+	idList< idEntityPtr<idEntity> >		guideEnts;
+	float								guideSpeedSlow;
+	float								guideSpeedFast;
+	float								guideRange;
+	float								guideAccelTime;
+
+	rvStateThread						rocketThread;
+
+	float								reloadRate;
+
+	bool								idleEmpty;
+
+private:
+
+	stateResult_t		State_Idle				( const stateParms_t& parms );
+	stateResult_t		State_Fire				( const stateParms_t& parms );
+	stateResult_t		State_Raise				( const stateParms_t& parms );
+	stateResult_t		State_Lower				( const stateParms_t& parms );
+	
+	stateResult_t		State_Rocket_Idle		( const stateParms_t& parms );
+	stateResult_t		State_Rocket_Reload		( const stateParms_t& parms );
+	
+	stateResult_t		Frame_AddToClip			( const stateParms_t& parms );
+	
+	CLASS_STATES_PROTOTYPE ( rvWeaponTurret );	
+
+
+
 };
+
+void rvWeaponTurret::Spawn(void){
+
+	float f;
+
+	idleEmpty = false;
+	
+	spawnArgs.GetFloat ( "lockRange", "0", guideRange );
+
+	spawnArgs.GetFloat ( "lockSlowdown", ".25", f );
+	attackDict.GetFloat ( "speed", "0", guideSpeedFast );
+	guideSpeedSlow = guideSpeedFast * f;
+	
+	reloadRate = SEC2MS ( spawnArgs.GetFloat ( "reloadRate", ".8" ) );
+	
+	guideAccelTime = SEC2MS ( spawnArgs.GetFloat ( "lockAccelTime", ".25" ) );
+	
+	// Start rocket thread
+	rocketThread.SetName ( viewModel->GetName ( ) );
+	rocketThread.SetOwner ( this );
+
+	// Cache the player origin and axis
+	playerViewOrigin = owner->firstPersonViewOrigin;
+	playerViewAxis   = owner->firstPersonViewAxis;
+	
+
+
+	// calculate weapon position based on player movement bobbing
+	owner->CalculateViewWeaponPos( viewModelOrigin, viewModelAxis );
+	viewModelOrigin += idVec3(0,0,50);
+	common->Printf("ViewModelOrigin in Spawn is : %f%f%f\n",viewModelOrigin.x,viewModelOrigin.y,viewModelOrigin.z);
+	if ( viewModel ) {
+		viewModel->GetPhysics()->SetOrigin( viewModelOrigin );
+		viewModel->GetPhysics()->SetAxis( viewModelAxis );
+		common->Printf("Set Origin\n");
+	}
+
+	if ( viewModel ) {
+		viewModel->UpdateAnimation( );
+	}
+	// Adjust reload animations to match the fire rate
+	/*idAnim* anim;
+	int		animNum;
+	float	rate;
+	animNum = viewModel->GetAnimator()->GetAnim ( "reload" );
+	if ( animNum ) {
+		anim = (idAnim*)viewModel->GetAnimator()->GetAnim ( animNum );
+		rate = (float)anim->Length() / (float)SEC2MS(spawnArgs.GetFloat ( "reloadRate", ".8" ));
+		anim->SetPlaybackRate ( rate );
+	}
+
+	animNum = viewModel->GetAnimator()->GetAnim ( "reload_empty" );
+	if ( animNum ) {
+		anim = (idAnim*)viewModel->GetAnimator()->GetAnim ( animNum );
+		rate = (float)anim->Length() / (float)SEC2MS(spawnArgs.GetFloat ( "reloadRate", ".8" ));
+		anim->SetPlaybackRate ( rate );
+	}*/
+
+	SetState ( "Raise", 0 );	
+	SetRocketState ( "Rocket_Idle", 0 );
+
+}
+
+void rvWeaponTurret::ThinkWeapon( )
+{
+/*	// Cache the player origin and axis
+	playerViewOrigin = owner->firstPersonViewOrigin;
+	playerViewAxis   = owner->firstPersonViewAxis;
+
+	// calculate weapon position based on player movement bobbing
+	owner->CalculateViewWeaponPos( viewModelOrigin, viewModelAxis );
+	*/
+	// hide offset is for dropping the gun when approaching a GUI or NPC
+	// This is simpler to manage than doing the weapon put-away animation
+ 	/*if ( gameLocal.time - hideStartTime < hideTime ) {		
+ 		float frac = ( float )( gameLocal.time - hideStartTime ) / ( float )hideTime;
+ 		if ( hideStart < hideEnd ) {
+ 			frac = 1.0f - frac;
+ 			frac = 1.0f - frac * frac;
+ 		} else {
+ 			frac = frac * frac;
+ 		}
+		hideOffset = hideStart + ( hideEnd - hideStart ) * frac;
+	} else {
+		hideOffset = hideEnd;
+	}
+	viewModelOrigin += hideOffset * viewModelAxis[ 2 ];
+	*/
+	// kick up based on repeat firing
+//	MuzzleRise( viewModelOrigin, viewModelAxis );
+/*
+	if ( viewModel ) {
+		// set the physics position and orientation
+		viewModel->GetPhysics()->SetOrigin( viewModelOrigin );
+		viewModel->GetPhysics()->SetAxis( viewModelAxis );
+ 		viewModel->UpdateVisuals();
+	} else {
+		common->Warning( "NULL viewmodel %s\n", __FUNCTION__ );
+	}
+	*/
+	// Update the zoom variable before updating the script
+/*	wsfl.zoom = owner->IsZoomed( );*/
+
+	// Only update the state loop on new frames
+ 	if ( gameLocal.isNewFrame ) {
+		stateThread.Execute( );
+	}
+
+	if ( viewModel ) {
+		viewModel->UpdateAnimation( );
+	}
+
+	// Clear reload and flashlight flags
+	wsfl.reload		= false;
+	wsfl.flashlight	= false;
+	
+	// deal with the third-person visible world model 
+	// don't show shadows of the world model in first person
+	if ( worldModel && worldModel->GetRenderEntity() ) {
+		// always show your own weapon
+		if( owner->entityNumber == gameLocal.localClientNum ) {
+			worldModel->GetRenderEntity()->suppressLOD = 1;
+		} else {
+			worldModel->GetRenderEntity()->suppressLOD = 0;
+		}
+
+		if ( gameLocal.IsMultiplayer() && g_skipPlayerShadowsMP.GetBool() ) {
+			// Disable all weapon shadows for the local client
+			worldModel->GetRenderEntity()->suppressShadowInViewID	= gameLocal.localClientNum+1;
+			worldModel->GetRenderEntity()->suppressShadowInLightID = WPLIGHT_MUZZLEFLASH * 100 + owner->entityNumber;
+		} else if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() || pm_thirdPerson.GetBool() ) {
+			// Show all weapon shadows
+			worldModel->GetRenderEntity()->suppressShadowInViewID	= 0;
+		} else {
+			// Only show weapon shadows for other clients
+			worldModel->GetRenderEntity()->suppressShadowInViewID	= owner->entityNumber+1;
+			worldModel->GetRenderEntity()->suppressShadowInLightID = WPLIGHT_MUZZLEFLASH * 100 + owner->entityNumber;
+		}
+	}
+
+	UpdateGUI();
+
+	// Update lights
+	UpdateMuzzleFlash ( );
+
+	// update the gui light
+	renderLight_t& light = lights[WPLIGHT_GUI];
+	if ( light.lightRadius[0] && guiLightJointView != INVALID_JOINT ) {
+		if ( viewModel ) {
+			idVec4 color = viewModel->GetRenderEntity()->gui[0]->GetLightColor ( );
+			light.shaderParms[ SHADERPARM_RED ]	  = color[0] * color[3];
+			light.shaderParms[ SHADERPARM_GREEN ] = color[1] * color[3];
+			light.shaderParms[ SHADERPARM_BLUE ]  = color[2] * color[3];
+			GetGlobalJointTransform( true, guiLightJointView, light.origin, light.axis, guiLightOffset );		
+			UpdateLight ( WPLIGHT_GUI );
+		} else {
+			common->Warning( "NULL viewmodel %s\n", __FUNCTION__ );
+		}
+	}
+
+	// Alert Monsters if the flashlight is one or a muzzle flash is active?
+	if ( !gameLocal.isMultiplayer ) {
+		if ( !owner->fl.notarget && (lightHandles[WPLIGHT_MUZZLEFLASH] != -1 || lightHandles[WPLIGHT_FLASHLIGHT] != -1 ) ) {
+			AlertMonsters ( );
+		}
+	}
+}
+
+void rvWeaponTurret::Think(void){
+	trace_t	tr;
+	int		i;
+
+	//rocketThread.Execute ( );
+
+	// Let the real weapon think first
+	rvWeaponTurret::ThinkWeapon( );
+
+	// IF no guide range is set then we dont have the mod yet	
+	if ( !guideRange ) {
+		return;
+	}
+	
+	if ( !wsfl.zoom ) {
+		if ( guideEffect ) {
+			guideEffect->Stop();
+			guideEffect = NULL;
+		}
+
+		for ( i = guideEnts.Num() - 1; i >= 0; i -- ) {
+			idGuidedProjectile* proj = static_cast<idGuidedProjectile*>(guideEnts[i].GetEntity());
+			if ( !proj || proj->IsHidden ( ) ) {
+				guideEnts.RemoveIndex ( i );
+				continue;
+			}
+			
+			// If the rocket is still guiding then stop the guide and slow it down
+			if ( proj->GetGuideType ( ) != idGuidedProjectile::GUIDE_NONE ) {
+				proj->CancelGuide ( );				
+				proj->SetSpeed ( guideSpeedFast, (1.0f - (proj->GetSpeed ( ) - guideSpeedSlow) / (guideSpeedFast - guideSpeedSlow)) * guideAccelTime );
+			}
+		}
+
+		return;
+	}
+						
+	// Cast a ray out to the lock range
+// RAVEN BEGIN
+// ddynerman: multiple clip worlds
+	gameLocal.TracePoint(	owner, tr, 
+							playerViewOrigin, 
+							playerViewOrigin + playerViewAxis[0] * guideRange, 
+							MASK_SHOT_RENDERMODEL, owner );
+// RAVEN END
+	
+	for ( i = guideEnts.Num() - 1; i >= 0; i -- ) {
+		idGuidedProjectile* proj = static_cast<idGuidedProjectile*>(guideEnts[i].GetEntity());
+		if ( !proj || proj->IsHidden() ) {
+			guideEnts.RemoveIndex ( i );
+			continue;
+		}
+		
+		// If the rocket isnt guiding yet then adjust its speed back to normal
+		if ( proj->GetGuideType ( ) == idGuidedProjectile::GUIDE_NONE ) {
+			proj->SetSpeed ( guideSpeedSlow, (proj->GetSpeed ( ) - guideSpeedSlow) / (guideSpeedFast - guideSpeedSlow) * guideAccelTime );
+		}
+		proj->GuideTo ( tr.endpos );				
+	}
+	
+	if ( !guideEffect ) {
+		guideEffect = gameLocal.PlayEffect ( gameLocal.GetEffect ( spawnArgs, "fx_guide" ), tr.endpos, tr.c.normal.ToMat3(), true, vec3_origin, true );
+	} else {
+		guideEffect->SetOrigin ( tr.endpos );
+		guideEffect->SetAxis ( tr.c.normal.ToMat3() );
+	}
+
+}
+
+void rvWeaponTurret::OnLaunchProjectile ( idProjectile* proj ) {
+	rvWeapon::OnLaunchProjectile(proj);
+	common->Printf(" **OnLaunchRocket**\n  ");
+
+	//Double G Swag Garry Start
+	proj->isRocket = true;
+	//END
+
+	// Double check that its actually a guided projectile
+	if ( !proj || !proj->IsType ( idGuidedProjectile::GetClassType() ) ) {
+		return;
+	}
+
+	// Launch the projectile
+	idEntityPtr<idEntity> ptr;
+	ptr = proj;
+	guideEnts.Append ( ptr );	
+}
+
+/*
+================
+rvWeaponRocketLauncher::SetRocketState
+================
+*/
+void rvWeaponTurret::SetRocketState ( const char* state, int blendFrames ) {
+	rocketThread.SetState ( state, blendFrames );
+}
