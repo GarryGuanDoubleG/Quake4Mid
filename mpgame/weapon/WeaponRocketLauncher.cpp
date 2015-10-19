@@ -586,3 +586,8 @@ stateResult_t rvWeaponRocketLauncher::Frame_AddToClip ( const stateParms_t& parm
 	return SRESULT_OK;
 }
 
+class rvWeaponTurret : rvWeaponRocketLauncher{
+
+	CLASS_PROTOTYPE( rvWeaponTurret );
+
+};
