@@ -572,7 +572,7 @@ void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIn
 	spawnArgs = weaponDef->dict;
 
 	if(isTurret){
-		TurretInit(_owner, idDeclEntityDef* def, _weaponIndex,_isStrogg);
+		TurretInit(_owner, def, _weaponIndex,_isStrogg);
 	}
 
 #ifdef _XENON
