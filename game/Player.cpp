@@ -3448,10 +3448,11 @@ void idPlayer::PressI( idUserInterface *hud ){
 
 	if(this->pressed_I == true){
 		common->Printf(" Press I is true and calling Handle Event Pressed_I\n");
-		this->showInv = !(this->showInv);
+		showInv = !showInv;
 		hud->HandleNamedEvent( "Pressed_I");
 		this->pressed_I = false;
 	}
+
 	
 } 
 
@@ -3753,19 +3754,8 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 		//Double G Swag Start
 		//Adding  Key I event to make inventory visible
 		if(showInv){
-			RouteGuiMouse(_hud);
-			common->Printf("Calling Cross Hide ");
-			cursor->HandleNamedEvent("crossHide");
-			const char*	command;
-			common->Printf("Setting EV \n");
-			sysEvent_t	ev;
-			ev = sys->GenerateMouseMoveEvent( SCREEN_WIDTH/2, SCREEN_HEIGHT/2 );
-			common->Printf("calling handle mouse event");
-			command = _hud->HandleEvent( &ev, gameLocal.time );
-			common->Printf("calling Handle Gui Commands");
-  			HandleGuiCommands( this, command );
+			common->Printf("Show Inv is True\n");
 		}
-
 		PressI(_hud);
 		//END
 
@@ -5177,6 +5167,7 @@ bool idPlayer::GiveInventoryItem( idDict *item ) {
 	if ( gameLocal.isMultiplayer && spectating ) {
 		return false;
 	}
+	common->Printf("Number of metals in inventory is %i \n",inventory.metal);
 
 // RAVEN BEGIN
 // mwhitlock: Dynamic memory consolidation
@@ -8594,16 +8585,18 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_23: {
 			common->Printf("Pressed I\n");
 			pressed_I = true;
-			showInv = true;
 			break;
 		}
 		case IMPULSE_24:{
-	
 			GiveStuffToPlayer(this, "weapon_rocketlauncher",NULL);
-
+			common->Printf("Spawning monster_turret\n");
+			Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
 			break;
 		}
-								
+		case IMPULSE_25:{
+			common->Printf("IMPULSE 25: 1SHIFT\n");
+			break;
+		}
 		case IMPULSE_28: {
  			if ( gameLocal.isClient || entityNumber == gameLocal.localClientNum ) {
  				gameLocal.mpGame.CastVote( gameLocal.localClientNum, true );

@@ -3681,6 +3681,13 @@ void idAI::OnDeath( void ){
 	}
 
 	aiManager.RemoveTeammate ( this );
+	//Double G Swag Start
+	//Getting AI position to spawn loot
+	common->Printf("Ai died, setting loot origins\n");
+	idPlayer * temp = gameLocal.GetLocalPlayer( );
+	temp->spawnLoot = true;
+	this->GetPosition( temp->lootOrigin,temp->lootAxis);
+	//END
 
 	ExecScriptFunction( funcs.death );
 
@@ -3698,6 +3705,17 @@ void idAI::OnDeath( void ){
 		}
 	}
 */
+	common->Printf("def_dropsItem1 item_metal\n");
+	Cmd_Spawn_f(idCmdArgs("spawn item_metal_shard",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_health_large_mp",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_armor_large_mp",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_health_mega",false));
+
+	//spawned loot, reset tracking variables
+	temp->spawnLoot = false;
+	temp->lootOrigin.Zero( );
+	temp->lootAxis.Identity( );
+
 }
 
 /*

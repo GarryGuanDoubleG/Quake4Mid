@@ -216,6 +216,8 @@ public:
 	int						startingAmmo[ MAX_WEAPONS ];
 
  	int						lastGiveTime;
+	int						metal;
+	int						craftedMods[3];
  	
 	idList<idDict *>		items;
 	idStrList				pdas;
@@ -331,6 +333,10 @@ public:
 		
 	// inventory
 	idInventory				inventory;
+	//DOUBLE G EDIT
+	bool					spawnLoot;
+	idVec3					lootOrigin;
+	idMat3					lootAxis;
 
 	rvWeapon*						weapon;
 	idEntityPtr<rvViewWeapon>		weaponViewModel;
