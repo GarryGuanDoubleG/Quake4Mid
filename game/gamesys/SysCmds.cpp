@@ -1137,10 +1137,11 @@ void Cmd_Spawn_f( const idCmdArgs &args ) {
 	//Double G Swag Edit
 	if(player->spawnLoot){
 		common->Printf("Spawn Loot\n");
-		org = player->lootOrigin + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
+		org = player->lootOrigin;
 	}
 	//end
-	org = player->GetPhysics()->GetOrigin() + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
+	else
+		org = player->GetPhysics()->GetOrigin() + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
 	dict.Set( "origin", org.ToString() );
 
 	for( i = 2; i < args.Argc() - 1; i += 2 ) {
