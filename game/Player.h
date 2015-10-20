@@ -207,11 +207,20 @@ public:
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];
 	int						weaponMods[ MAX_WEAPONS ];
-	//DOUBLE G
-	int						metal;
-	int						lightning;
-	int						orbital;
+	//DOUBLE G SWAG EDIt
+	//count of material
+	int						metals;
+	int						lightnings;
+	int						orbitals;
 	int						explosives;
+	int						Turrets;
+
+	//mods take 1 metal 1 lightning
+	bool					madeLightning;
+	bool					madeOrbital;
+	bool					madeExplosive;
+	bool					TurretEnabled;//can make turret or not
+	//END
  	// multiplayer
  	int						ammoPredictTime;
 	int						ammoRegenStep[ MAX_WEAPONS ];
@@ -653,6 +662,7 @@ public:
 	bool					pressed_I;
 	bool					showInv;
 	void					PressI( idUserInterface *hud );
+	void					UpdateItemStats ( idUserInterface *hud );
 	//END
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );

@@ -72,6 +72,20 @@ const int IMPULSE_28			= 28;			// vote yes
 const int IMPULSE_29			= 29;			// vote no
 const int IMPULSE_40			= 40;			// repeast last radio chatter
 
+//DOUBLE G SWAG EDIT
+//Setting impulses for inventory all together
+const int IMPULSE_41			= 41; //item metal
+const int IMPULSE_42			= 42; //item gglightning
+const int IMPULSE_43			= 43; //item ggExplosive
+const int IMPULSE_44			= 44;// item Orbital
+const int IMPULSE_45			= 45; // lightning mod
+const int IMPULSE_46			= 46; // explosive mod
+const int IMPULSE_47			= 47; // orbital mod
+const int IMPULSE_48			= 48; // turret
+const int IMPULSE_49			= 49; // <unused> might use it later idk
+//END OF SWAG Impulses
+
+
 // RAVEN BEGIN
 // bdube: added flashlight
 const int IMPULSE_50			= 50;			// activate flashlight

@@ -3382,11 +3382,36 @@ void idPlayer::UpdateHudAmmo( idUserInterface *_hud ) {
 	_hud->SetStateBool( "player_ammo_empty", ( ammoamount == 0 ) );
 }
 
+/*Double G Swag Edit
+===============
+idPlayer::UpdateItemStats
+===============
+setting stats on hud to match our inventory
+*/
+void idPlayer::UpdateItemStats ( idUserInterface *_hud)
+{
+	//update stats. Let the impulse call enable / disable for 
+	//gui changes
+	_hud->SetStateBool("haveLightning", inventory.madeLightning);
+	_hud->SetStateBool("haveOrbital", inventory.madeOrbital);
+	_hud->SetStateBool("haveExplosive", inventory.madeExplosive);
+	_hud->SetStateBool("TurretEnabled", inventory.TurretEnabled);
+
+	_hud->SetStateInt("ggMetals", inventory.metals);
+	_hud->SetStateInt("ggLightnings", inventory.lightnings);
+	_hud->SetStateInt("ggOrbitals", inventory.orbitals);
+	_hud->SetStateInt("ggExplosives", inventory.explosives);
+	_hud->SetStateInt("numTurrets",inventory.Turrets);
+
+}
+
+
 /*
 ===============
 idPlayer::UpdateHudStats
 ===============
 */
+
 void idPlayer::UpdateHudStats( idUserInterface *_hud ) {
 	int temp;
 	
@@ -3756,7 +3781,10 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 		if(showInv){
 			common->Printf("Show Inv is True\n");
 		}
+		
+		UpdateItemStats(_hud);
 		PressI(_hud);
+		
 		//END
 
 		UpdateHudStats( _hud );

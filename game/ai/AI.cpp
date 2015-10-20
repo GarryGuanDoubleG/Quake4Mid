@@ -3705,11 +3705,12 @@ void idAI::OnDeath( void ){
 		}
 	}
 */
+	//got yo drops right here
 	common->Printf("def_dropsItem1 item_metal\n");
-	Cmd_Spawn_f(idCmdArgs("spawn item_metal_shard",false));
-	Cmd_Spawn_f(idCmdArgs("spawn item_health_large_mp",false));
-	Cmd_Spawn_f(idCmdArgs("spawn item_armor_large_mp",false));
-	Cmd_Spawn_f(idCmdArgs("spawn item_health_mega",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_metal",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_ggLightning",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_ggExplosive",false));
+	Cmd_Spawn_f(idCmdArgs("spawn item_ggOrbital",false));
 
 	//spawned loot, reset tracking variables
 	temp->spawnLoot = false;

@@ -631,6 +631,8 @@ idItem::Pickup
 ================
 */
 bool idItem::Pickup( idPlayer *player ) {
+	common->Printf("Start of idItem::Pickup\n");
+	common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
 	//dropped weapon?
 	bool dropped = spawnArgs.GetBool( "dropped" );
 
@@ -750,7 +752,9 @@ bool idItem::Pickup( idPlayer *player ) {
 	trigger->SetContents( 0 );	
 	
 	StopEffect( "fx_idle" );
-
+	//Double G Swag Start
+	common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
+	//Double G SWag END
 	return true;
 }
 
