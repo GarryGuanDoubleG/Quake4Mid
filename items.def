@@ -132,11 +132,58 @@ entityDef item_metal
 	"editor_maxs"			"10 10 16"
 	"spawnclass"			"idItem"
 	"model"				"models/items/ammo/ammo_box.lwo"
-	"inv_metal"			"10"
+	"inv_metals"			"10"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"size"				"32"
 	"snd_acquire"			"pickup_armor_shard"
 }
+
+entityDef item_ggLightning
+{
+	"inherit"			"item_default"
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-10 -10 0"
+	"editor_maxs"			"10 10 16"
+	"spawnclass"			"idItem"
+	"model"				"models/items/ammo/ammo_box.lwo"
+	"inv_lightnings"		"1"
+	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
+	"size"				"32 32 32"
+	"snd_acquire"			"pickup_armor_shard"
+}
+
+entityDef item_ggOrbital
+{
+	"inherit"			"item_default"
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-10 -10 0"
+	"editor_maxs"			"10 10 16"
+	"spawnclass"			"idItem"
+	"model"				"models/pick_ups/mp_pickups/mp_mega_health.lwo"
+	"inv_orbitals"			"1"
+	"inv_lightnings"		"1"
+	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
+	"size"				"32 32 32"
+	"snd_acquire"			"pickup_armor_shard"
+}
+
+entityDef item_ggExplosive
+{
+	"inherit"			"item_default"
+	"editor_color"			".3 .3 1"
+	"editor_mins"			"-10 -10 0"
+	"editor_maxs"			"10 10 16"
+	"spawnclass"			"idItem"
+	"model"				"models/pick_ups/sp_pickups/sp_grenades.lwo"
+	"size"				"32 32 32"
+	"inv_explosives"		"1"
+	"inv_metal"			"10"
+	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
+	"snd_acquire"			"pickup_armor_shard"
+}
+
+
+
 
 entityDef item_health
 {

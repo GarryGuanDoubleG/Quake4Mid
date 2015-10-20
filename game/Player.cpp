@@ -203,7 +203,15 @@ void idInventory::Clear( void ) {
 	armor				= 0;
 	maxarmor			= 0;
 	secretAreasDiscovered = 0;
+	//DOUBLE G SWAG EDIT
+	lightnings			= 0;
+	explosives			= 0;
+	orbitals			= 0;
+	metals				= 0;
+	Turrets				= 0;
 
+	madeLightning =	madeOrbital = madeExplosive =TurretEnabled = false;
+	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
 	memset( ammo, 0, sizeof( ammo ) );
 
 	ClearPowerUps();
@@ -330,7 +338,9 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	const char	*name;
 
 	//We might not need to clear it out.
-	//Clear();
+	//DOUBLE G SWAG HERE. I need to clear this out because I'm not gonna save
+	Clear();
+	//END
 
 	// health/armor
 	maxHealth		= dict.GetInt( "maxhealth", "100" );
@@ -1272,6 +1282,10 @@ idPlayer::idPlayer() {
  	isTelefragged			= false;
 	isLagged				= false;
  	isChatting				= false;
+	//DOUBLE G SWAG
+	spawnLoot				= false;
+	lootOrigin.Zero( );
+	lootAxis.Identity( );
 
 	intentDir.Zero();
 	aasSensor = rvAASTacticalSensor::CREATE_SENSOR(this);
@@ -1496,7 +1510,6 @@ void idPlayer::Init( void ) {
 	const char			*value;
 	//DOUBLE G SWAG Pressed I set to False
 	pressed_I				= false;
-	showInv					= false;
 	//END
 	noclip					= false;
 	godmode					= false;
@@ -3473,7 +3486,6 @@ void idPlayer::PressI( idUserInterface *hud ){
 
 	if(this->pressed_I == true){
 		common->Printf(" Press I is true and calling Handle Event Pressed_I\n");
-		showInv = !showInv;
 		hud->HandleNamedEvent( "Pressed_I");
 		this->pressed_I = false;
 	}
@@ -3778,10 +3790,7 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 		}	
 		//Double G Swag Start
 		//Adding  Key I event to make inventory visible
-		if(showInv){
-			common->Printf("Show Inv is True\n");
-		}
-		
+
 		UpdateItemStats(_hud);
 		PressI(_hud);
 		
@@ -5195,7 +5204,7 @@ bool idPlayer::GiveInventoryItem( idDict *item ) {
 	if ( gameLocal.isMultiplayer && spectating ) {
 		return false;
 	}
-	common->Printf("Number of metals in inventory is %i \n",inventory.metal);
+	common->Printf("Number of metals in inventory is %i \n",inventory.metals);
 
 // RAVEN BEGIN
 // mwhitlock: Dynamic memory consolidation
@@ -8641,6 +8650,53 @@ void idPlayer::PerformImpulse( int impulse ) {
 			idFuncRadioChatter::RepeatLast();
 			break;
 		}
+
+
+		//DOUBLE G HERE. Start of keys for IMPULSES
+		case IMPULSE_41: {
+			common->Printf("Testing if 41 works \n");
+			inventory.selectedMetal = !inventory.selectedMetal;
+			hud->SetStateBool("SelectedMetal", inventory.selectedMetal);
+			hud->HandleNamedEvent("SelectMetal");
+			break;
+		}
+		case IMPULSE_42: {
+			common->Printf("Testing 42 \n");
+			hud->HandleNamedEvent("SelectLightning");
+			break;
+		}
+		case IMPULSE_43: {
+			common->Printf("Testing 43 \n");
+			hud->HandleNamedEvent("SelectExplosive");
+			break;
+		}
+		case IMPULSE_44: {
+			common->Printf("Testing 44 \n");
+			hud->HandleNamedEvent("SelectOrbital");
+			break;
+		}
+		case IMPULSE_45: {
+			common->Printf("Testing 45 \n");
+			break;
+		}
+		case IMPULSE_46: {
+			common->Printf("Testing 46 \n");
+			break;
+		}
+		case IMPULSE_47: {
+			common->Printf("Testing 47 \n");
+			break;
+		}
+		case IMPULSE_48: {
+			common->Printf("Testing 48 \n");
+			break;
+		}
+		case IMPULSE_49: {
+			common->Printf("Testing 49 \n");
+			break;
+		}
+
+		//END
 
 // RITUAL BEGIN
 // squirrel: Mode-agnostic buymenus

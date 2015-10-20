@@ -220,6 +220,11 @@ public:
 	bool					madeOrbital;
 	bool					madeExplosive;
 	bool					TurretEnabled;//can make turret or not
+	//states for hud
+	bool					selectedMetal;
+	bool					selectedLightning;
+	bool					selectedExplosive;
+	bool					selectedOrbital;
 	//END
  	// multiplayer
  	int						ammoPredictTime;
@@ -349,6 +354,7 @@ public:
 	bool					spawnLoot;
 	idVec3					lootOrigin;
 	idMat3					lootAxis;
+	//END
 
 	rvWeapon*						weapon;
 	idEntityPtr<rvViewWeapon>		weaponViewModel;
@@ -660,7 +666,6 @@ public:
 	//Double G Swag 
 	//Adding I Key Event
 	bool					pressed_I;
-	bool					showInv;
 	void					PressI( idUserInterface *hud );
 	void					UpdateItemStats ( idUserInterface *hud );
 	//END

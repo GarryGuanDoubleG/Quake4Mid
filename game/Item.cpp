@@ -631,8 +631,8 @@ idItem::Pickup
 ================
 */
 bool idItem::Pickup( idPlayer *player ) {
-	common->Printf("Start of idItem::Pickup\n");
-	common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
+	//common->Printf("Start of idItem::Pickup\n");
+	//common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
 	//dropped weapon?
 	bool dropped = spawnArgs.GetBool( "dropped" );
 
@@ -753,7 +753,7 @@ bool idItem::Pickup( idPlayer *player ) {
 	
 	StopEffect( "fx_idle" );
 	//Double G Swag Start
-	common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
+	//common->Printf("Metals: %i, Lightnings: %i Orbitals: %i, Explosives: %i, Turrets: %i \n",player->inventory.metals,player->inventory.lightnings,player->inventory.orbitals,player->inventory.explosives,player->inventory.Turrets);
 	//Double G SWag END
 	return true;
 }
@@ -977,11 +977,18 @@ idItem::Event_Trigger
 ================
 */
 void idItem::Event_Trigger( idEntity *activator ) {
+	common->Printf("\n In Event Trigger. Can Pick up is " );
+	common->Printf( canPickUp ? "true\n" : "false\n" );
+	common->Printf("Trigger First is " );
+	common->Printf(spawnArgs.GetBool("triggerFirst") ? " true\n" : "false\n");
 	if ( !canPickUp && spawnArgs.GetBool( "triggerFirst" ) ) {
 		canPickUp = true;
 		return;
 	}
 
+
+	common->Printf("\nActivator is player ");
+	common->Printf(activator && activator->IsType( idPlayer::GetClassType()) ? " true\n" : " false\n" );
 // RAVEN BEGIN
 // jnewquist: Use accessor for static class type 
 	if ( activator && activator->IsType( idPlayer::GetClassType() ) ) {

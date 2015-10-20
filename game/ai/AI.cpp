@@ -3713,9 +3713,10 @@ void idAI::OnDeath( void ){
 	Cmd_Spawn_f(idCmdArgs("spawn item_ggOrbital",false));
 
 	//spawned loot, reset tracking variables
-	temp->spawnLoot = false;
-	temp->lootOrigin.Zero( );
-	temp->lootAxis.Identity( );
+
+	gameLocal.GetLocalPlayer( )->spawnLoot = false;
+	gameLocal.GetLocalPlayer( )->lootOrigin.Zero( );
+	gameLocal.GetLocalPlayer( )->lootAxis.Identity( );
 
 }
 

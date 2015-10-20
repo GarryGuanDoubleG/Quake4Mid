@@ -3,8 +3,7 @@ windowDef Desktop
 	rect	0,0,640,480
 	visible	1
 	menugui	1
-	)	)
-	/	2
+
 	definevec4	"ws_on"	1,0.5,0,1
 	definevec4	"ws_off"	0.658,0.639,0.376,0.6
 	definevec4	"ws_glowon"	0.7,0.8,0.5,1
@@ -25,6 +24,19 @@ windowDef Desktop
 	float	"hidden"	0
 	definefloat	"showGunInfo"	1
 	definefloat	"switchLeft"	(640-((gui::weaponcount*30)-2
+	
+	bool 	"selectedMetal"		0
+	bool 	"selectedLightning"	0
+	bool 	"selectedExplosive"	0
+	bool 	"selectedOrbital"	0
+	//states for weap mods
+	bool	"haveOrbital"  	 	0
+	bool	"haveLightning" 	0
+	bool 	"haveExplosive"		0
+	int	"ggMetals"		0
+	int 	"ggLightnings"		0
+	int 	"ggOrbitals"		0
+	int 	"ggExplosives"		0
 
 	onInit {
 		namedEvent "updateHealth";
@@ -76,29 +88,83 @@ windowDef Desktop
 			set "showcursor" "1";
 		}
 	}
-
-	onNamedEvent enableRocket {
-		set "item_8::matcolor" "0,0.976,0.486,1";
+	//changes color of inventory slots
+	onNamedEvent selectMetal{
+		if(selectedMetal){
+			set "item_0::matcolor" "0,1,1,1";
+		}
+		else{
+		set "item_0::matcolor" "0,0.976,0.486,1"; 
+		}
+	}
+	onNamedEvent selectLightning{
+		if(selectedLightning){
+			set "item_1::matcolor" "0,1,1,1";
+		}
+		else{
+		set "item_1::matcolor" "0,0.976,0.486,1"; 
+		}
+	}
+	onNamedEvent selectExplosive{
+		if(selectedMetal){
+			set "item_2::matcolor" "0,1,1,1";
+		}
+		else{
+		set "item_2::matcolor" "0,0.976,0.486,1"; 
+		}
+	}
+	
+	onNamedEvent selectOrbital{
+		if(selectedMetal){
+			set "item_3::matcolor" "0,1,1,1";
+		}
+		else{
+		set "item_3::matcolor" "0,0.976,0.486,1"; 
+		}
 	}
 
-	onNamedEvent disableRocket {
-		set "item_8::matcolor" "1,0,0,1";
+
+	}
+	onNamedEvent enableOrbital {
+		set "item_8::matcolor" "0,0.976,0.486,1";
+		haveOrbital = 1;
+	}
+	//
+	onNamedEvent disableOrbital {
+		if( haveOrbital == 0 ){
+			set "item_8::matcolor" "1,0,0,1";
+		}
+		else{
+			set "item_8::matcolor" "0,1,1,1";
+		}
 	}
 
 	onNamedEvent enableExplode {
-		set "item_8::matcolor" "0,0.976,0.486,1";
+		set "item_9::matcolor" "0,0.976,0.486,1";
+		haveExplosive = 1;
 	}
 
 	onNamedEvent disableExplode {
-		set "item_8::matcolor" "1,0,0,1";
+		if( haveExplosive == 0 ){
+			set "item_9::matcolor" "1,0,0,1";
+		}
+		else{
+			set "item_9::matcolor" "0,1,1,1";
+		}
 	}
 
 	onNamedEvent enableLightning {
-		set "item_8::matcolor" "0,0.976,0.486,1";
+		set "item_10::matcolor" "0,0.976,0.486,1";
+		haveLightning = 1;
 	}
 
 	onNamedEvent disableLightning {
-		set "item_8::matcolor" "1,0,0,1";
+		if( haveLightning == 0 ){
+			set "item_10::matcolor" "1,0,0,1";
+		}
+		else{
+			set "item_10::matcolor" "0,1,1,1";
+		}
 	}
 
 	onNamedEvent updateHealth {
@@ -2185,7 +2251,7 @@ windowDef Desktop
 	windowDef inventory_grid
 	{
 		rect	2,1,640,480
-		visible	1
+		visible	 0
 		windowDef Item_0
 		{
 			rect	19,89,100,100
@@ -2193,7 +2259,7 @@ windowDef Desktop
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
 			forecolor	1,1,1,1
-			text	"0"
+			text		"gui::metal_count"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
@@ -2205,7 +2271,7 @@ windowDef Desktop
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text	"0"
+			text		"gui::ggLightning"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
@@ -2219,7 +2285,7 @@ windowDef Desktop
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text	"0"
+			text		"gui::ggExplosive"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
@@ -2232,13 +2298,14 @@ windowDef Desktop
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text	"0"
+			text		"gui::ggOrbital"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
 			textalignx	50
 
 		}
+		//Orbital mod
 		windowDef Item_8
 		{
 			rect	519,170,100,100
@@ -2246,6 +2313,7 @@ windowDef Desktop
 			background	"gfx/guis/hud/valbar"
 			matcolor	1,0,0,1
 		}
+		//Explosive
 		windowDef Item_9
 		{
 			rect	520,242,100,100
@@ -2253,6 +2321,7 @@ windowDef Desktop
 			background	"gfx/guis/hud/valbar"
 			matcolor	1,0,0,1
 		}
+		//Lightning
 		windowDef Item_10
 		{
 			rect	519,323,100,100
@@ -2267,7 +2336,8 @@ windowDef Desktop
 			background	"gfx/guis/ggOrbit.tga"
 			matcolor	1,1,1,1
 		}
-		windowDef Craftable_Item
+		//big box in the middle. Crafts turret
+		windowDef CraftTurret
 		{
 			rect	118,-32,400,250
 			visible	1
@@ -2279,6 +2349,7 @@ windowDef Desktop
 			textalignx	220
 			textaligny	50
 		}
+		//icons
 		windowDef gglightning
 		{
 			rect	531,351,47,47

@@ -464,8 +464,11 @@ void idItem::Spawn( void ) {
 	//pulse = !spawnArgs.GetBool( "nopulse" );
 	pulse = false;
 	orgOrigin = GetPhysics()->GetOrigin();
-
+	//Double G testing swag
+	common->Printf("No Touch is %i\n", spawnArgs.GetBool( "no touch") );
+	common->Printf("No Touch is %i\n", spawnArgs.GetBool( "triggerFirst") );
 	canPickUp = !( spawnArgs.GetBool( "triggerFirst" ) || spawnArgs.GetBool( "no_touch" ) );
+	//End
 
 	inViewTime = -1000;
 	lastCycle = -1;
