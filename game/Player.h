@@ -207,7 +207,11 @@ public:
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];
 	int						weaponMods[ MAX_WEAPONS ];
-
+	//DOUBLE G
+	int						metal;
+	int						lightning;
+	int						orbital;
+	int						explosives;
  	// multiplayer
  	int						ammoPredictTime;
 	int						ammoRegenStep[ MAX_WEAPONS ];
@@ -216,7 +220,6 @@ public:
 	int						startingAmmo[ MAX_WEAPONS ];
 
  	int						lastGiveTime;
-	int						metal;
 	int						craftedMods[3];
  	
 	idList<idDict *>		items;
