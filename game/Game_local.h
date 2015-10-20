@@ -46,6 +46,9 @@ class idWorldspawn;
 class idTestModel;
 class idAAS;
 class idAI;
+// DOUBLE G SWAG START
+//class ggTurret;
+//END
 // RAVEN BEGIN
 // bdube: not using id effects
 //class idSmokeParticles;

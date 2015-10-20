@@ -8598,18 +8598,9 @@ void idPlayer::PerformImpulse( int impulse ) {
 			break;
 		}
 		case IMPULSE_24:{
-			common->Printf("Pressed Impulse 24\n");
-			
-			idTypeInfo*	typeInfo;
-			typeInfo = idClass::GetClass( weaponDef->dict.GetString( "weaponclass", "rvWeaponRocket" ) );
+	
+			GiveStuffToPlayer(this, "weapon_rocketlauncher",NULL);
 
-			weaponDef = GetWeaponDef( 10 );//10 = rocketlauncher weapon index...i think?
-			int currentWeapon = 10;
-
-			weapon = static_cast<rvWeapon*>( typeInfo->CreateInstance() );
-			weapon->TurretInit( this, weaponDef, currentWeapon, isStrogg );
-			weapon->isTurret = true;
-			weapon->CallSpawn( ); 
 			break;
 		}
 								
@@ -9555,7 +9546,9 @@ void idPlayer::Think( void ) {
 
 	// set the push velocity on the weapon before running the physics
 	if ( weapon ) {
-		weapon->SetPushVelocity( physicsObj.GetPushedLinearVelocity() );
+		//DOUBLE G Edit
+		if(!weapon->isTurret)
+			weapon->SetPushVelocity( physicsObj.GetPushedLinearVelocity() );
 	}
 
 	EvaluateControls();

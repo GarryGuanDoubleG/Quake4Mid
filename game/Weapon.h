@@ -131,6 +131,11 @@ public:
 	//DOUBLE G SWAG EDIT
 	bool				isTurret;
 	void				TurretInit					( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg = false );
+	virtual void		TurretSpawn					( void );
+	virtual void		TurretThink					( void );
+	//Double G Start
+	 idVec3					SpawnOrigin; // use these so turret dont move
+	idMat3					SpawnAxis;
 	//END
 	void				Init						( idPlayer* _owner, const idDeclEntityDef* def, int weaponIndex, bool isStrogg = false );
 

@@ -2,7 +2,8 @@
 #include "../../idlib/precompiled.h"
 #pragma hdrstop
 
-#include "../Game_local.h"
+#include "AI_Manager.h"
+//DOUBLE G SWAG EDIT
 
 class rvMonsterTurret : public idAI {
 public:
@@ -61,6 +62,12 @@ rvMonsterTurret::Spawn
 ================
 */
 void rvMonsterTurret::Spawn ( void ) {
+	//Double G Edit
+	aiManager.RemoveTeammate(this);
+	spawnArgs.SetInt("team",AITEAM_MARINE);
+	team = AITEAM_MARINE;
+	aiManager.AddTeammate ( this );
+	//END
 	actionBlasterAttack.Init ( spawnArgs,	"action_blasterAttack",	"Torso_BlasterAttack",	AIACTIONF_ATTACK );
 
 	shieldHealth = spawnArgs.GetInt ( "shieldHealth" );

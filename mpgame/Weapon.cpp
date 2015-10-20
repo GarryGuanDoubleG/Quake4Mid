@@ -572,10 +572,10 @@ void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIn
 	
 	spawnArgs = weaponDef->dict;
 
-	if(isTurret){
+	/*if(isTurret){
 		TurretInit(_owner, def, _weaponIndex,_isStrogg);
 	}
-
+	*/
 #ifdef _XENON
 	aimAssistFOV = spawnArgs.GetFloat( "aimAssistFOV", "10.0f" );
 #endif	

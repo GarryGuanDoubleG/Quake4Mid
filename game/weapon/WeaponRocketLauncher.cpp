@@ -17,9 +17,9 @@ public:
 	rvWeaponRocketLauncher ( void );
 	~rvWeaponRocketLauncher ( void );
 
-	//Double G Start
-	void					TurretSpawn			( void );
-	void					TurretThink			( void );
+
+	virtual void			TurretSpawn			( void );
+	virtual void			TurretThink			( void );
 	//
 
 	virtual void			Spawn				( void );
@@ -93,7 +93,7 @@ rvWeaponRocketLauncher::~rvWeaponRocketLauncher ( void ) {
 //DOUBLE G SWAG START
 void rvWeaponRocketLauncher::TurretSpawn( void ){
 	float f;
-
+	common->Printf("RocketTurretSpawn\n");
 	idleEmpty = false;
 	
 	spawnArgs.GetFloat ( "lockRange", "0", guideRange );
@@ -118,7 +118,11 @@ void rvWeaponRocketLauncher::TurretSpawn( void ){
 
 	// calculate weapon position based on player movement bobbing
 	owner->CalculateViewWeaponPos( viewModelOrigin, viewModelAxis );
-	viewModelOrigin += idVec3(0,0,50);
+	viewModelOrigin += idVec3(100,100,50);
+	SpawnOrigin.Zero();
+	SpawnOrigin += viewModelOrigin + idVec3(0,0,75);
+	SpawnAxis = viewModelAxis;
+
 	common->Printf("ViewModelOrigin in Spawn is : %f%f%f\n",viewModelOrigin.x,viewModelOrigin.y,viewModelOrigin.z);
 	if ( viewModel ) {
 		viewModel->GetPhysics()->SetOrigin( viewModelOrigin );
@@ -129,6 +133,9 @@ void rvWeaponRocketLauncher::TurretSpawn( void ){
 	if ( viewModel ) {
 		viewModel->UpdateAnimation( );
 	}
+
+	InitDefs( );
+	InitWorldModel( );
 	// Adjust reload animations to match the fire rate
 	/*idAnim* anim;
 	int		animNum;
@@ -152,19 +159,25 @@ void rvWeaponRocketLauncher::TurretSpawn( void ){
 }
 
 void rvWeaponRocketLauncher::TurretThink( void ){
-
+	common->Printf("TurretThink");
 	// Only update the state loop on new frames
  	if ( gameLocal.isNewFrame ) {
 		stateThread.Execute( );
 	}
 
 	if ( viewModel ) {
-		viewModel->UpdateAnimation( );
-	}
+		// set the physics position and orientation
+		viewModel->GetPhysics()->SetOrigin(SpawnOrigin );
+		viewModel->GetPhysics()->SetAxis( SpawnAxis );
+ 		viewModel->UpdateVisuals();
+	} 
+	
 
 	// Clear reload and flashlight flags
 	wsfl.reload		= false;
 	wsfl.flashlight	= false;
+	worldModel->SetOrigin(SpawnOrigin);
+	worldModel->SetAxis(SpawnAxis);
 	
 	// deal with the third-person visible world model 
 	// don't show shadows of the world model in first person
@@ -190,7 +203,7 @@ void rvWeaponRocketLauncher::TurretThink( void ){
 		}
 	}
 
-	UpdateGUI();
+	//UpdateGUI();
 
 	// Update lights
 	UpdateMuzzleFlash ( );
@@ -226,12 +239,64 @@ rvWeaponRocketLauncher::Spawn
 */
 void rvWeaponRocketLauncher::Spawn ( void ) {
 	float f;
-
+	/*
 	if(isTurret){
 		TurretSpawn( );
 		return;
 	}
+	*/
+	common->Printf("RocketLauncherSpawn\n");
 
+	fireRate	= SEC2MS ( spawnArgs.GetFloat ( "fireRate" ) );
+	altFireRate	= SEC2MS ( spawnArgs.GetFloat ( "altFireRate" ) );
+	if( altFireRate == 0 ) {
+		altFireRate = fireRate;
+	}
+	spread		= (gameLocal.IsMultiplayer()&&spawnArgs.FindKey("spread_mp"))?spawnArgs.GetFloat ( "spread_mp" ):spawnArgs.GetFloat ( "spread" );
+	nextAttackTime = 0;
+
+	// Zoom
+	zoomFov = spawnArgs.GetInt( "zoomFov", "-1" );
+	zoomGui  = uiManager->FindGui ( spawnArgs.GetString ( "gui_zoom", "" ), true );
+	zoomTime = spawnArgs.GetFloat ( "zoomTime", ".15" );
+	wfl.zoomHideCrosshair = spawnArgs.GetBool ( "zoomHideCrosshair", "1" );
+
+	// Attack related values
+	muzzle_kick_time	= SEC2MS( spawnArgs.GetFloat( "muzzle_kick_time" ) );
+	muzzle_kick_maxtime	= SEC2MS( spawnArgs.GetFloat( "muzzle_kick_maxtime" ) );
+	muzzle_kick_angles	= spawnArgs.GetAngles( "muzzle_kick_angles" );
+	muzzle_kick_offset	= spawnArgs.GetVector( "muzzle_kick_offset" );
+
+	// General weapon properties
+	wfl.silent_fire		= spawnArgs.GetBool( "silent_fire" );
+	wfl.hasWindupAnim   = spawnArgs.GetBool( "has_windup", "0" );
+	icon				= spawnArgs.GetString( "mtr_icon" );
+ 	hideTime			= SEC2MS( weaponDef->dict.GetFloat( "hide_time", "0.3" ) );
+ 	hideDistance		= weaponDef->dict.GetFloat( "hide_distance", "-15" );
+ 	hideStartTime		= gameLocal.time - hideTime;
+ 	muzzleOffset		= weaponDef->dict.GetFloat ( "muzzleOffset", "14" );
+
+	// Ammo
+	clipSize			= spawnArgs.GetInt( "clipSize" );
+	ammoRequired		= spawnArgs.GetInt( "ammoRequired" );
+	lowAmmo				= spawnArgs.GetInt( "lowAmmo" );
+	ammoType			= GetAmmoIndexForName( spawnArgs.GetString( "ammoType" ) );
+	maxAmmo				= owner->inventory.MaxAmmoForAmmoClass ( owner, GetAmmoNameForIndex ( ammoType ) );
+	
+	if ( ( ammoType < 0 ) || ( ammoType >= MAX_AMMO ) ) {
+		gameLocal.Warning( "Unknown ammotype for class '%s'", this->GetClassname ( ) );
+	}
+
+	// If the weapon has a clip, then fill it up
+ 	ammoClip = owner->inventory.clip[weaponIndex];
+ 	if ( ( ammoClip < 0 ) || ( ammoClip > clipSize ) ) {
+ 		// first time using this weapon so have it fully loaded to start
+ 		ammoClip = clipSize;
+ 		int ammoAvail = owner->inventory.HasAmmo( ammoType, ammoRequired );
+ 		if ( ammoClip > ammoAvail ) {
+ 			ammoClip = ammoAvail;
+		}
+	}
 	idleEmpty = false;
 	
 	spawnArgs.GetFloat ( "lockRange", "0", guideRange );

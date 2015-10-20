@@ -496,6 +496,7 @@ rvWeapon::rvWeapon ( void ) {
 rvWeapon::~rvWeapon
 ================
 */
+
 rvWeapon::~rvWeapon( void ) {
 	int i;
 	
@@ -517,7 +518,8 @@ rvWeapon::Init
 */
 void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg ) {
 	int i;
-	
+	isTurret		= false;//if true, call Turret init;
+
 	viewModel		= _owner->GetWeaponViewModel( );
 	worldModel		= _owner->GetWeaponWorldModel( );
 	weaponDef		= def; 
@@ -569,9 +571,13 @@ void rvWeapon::TurretInit( idPlayer* _owner, const idDeclEntityDef* def, int _we
 	weaponIndex 	= _weaponIndex;
 	mods			= owner->inventory.weaponMods[ weaponIndex ];
 	isStrogg		= _isStrogg;
-	
 	spawnArgs = weaponDef->dict;
 
+
+	common->Printf("Setting Spawn Origin & Axis \n");
+	owner->GetPosition(SpawnOrigin,SpawnAxis);
+	SpawnOrigin += idVec3(0,0, 75);
+	scriptObject->Free();
 #ifdef _XENON
 	aimAssistFOV = spawnArgs.GetFloat( "aimAssistFOV", "10.0f" );
 #endif	
@@ -595,11 +601,21 @@ void rvWeapon::TurretInit( idPlayer* _owner, const idDeclEntityDef* def, int _we
 		
 		spawnArgs.Copy ( *modDict );
    	}
-   	
-   	// Associate the weapon with the view model
-	viewModel->weapon = this;
+
 
 }
+//let child classes call spawn & think
+void rvWeapon::TurretSpawn( void ){
+	common->Printf("RvWeapon Turret Spawn CALLED \n");
+}
+//rocket launcher turretthink should call this
+//print to game to check
+void rvWeapon::TurretThink( void ){
+	common->Printf("RvWeapon Turret Think CALLED \n");
+}
+
+
+//DOUBLE G END
 
 
 /*
@@ -628,6 +644,7 @@ rvWeapon::Spawn
 */
 void rvWeapon::Spawn ( void ) {
 	
+	common->Printf("Weapon Spawn\n");
 	memset ( &wsfl, 0, sizeof(wsfl) );
 	memset ( &wfl, 0, sizeof(wfl) );
 
@@ -1062,6 +1079,10 @@ void rvWeapon::Think ( void ) {
 
 	if ( viewModel ) {
 		// set the physics position and orientation
+		if(isTurret){
+			viewModelOrigin = SpawnOrigin;
+			viewModelAxis = SpawnAxis;
+		}
 		viewModel->GetPhysics()->SetOrigin( viewModelOrigin );
 		viewModel->GetPhysics()->SetAxis( viewModelAxis );
  		viewModel->UpdateVisuals();
@@ -1153,8 +1174,9 @@ void rvWeapon::InitWorldModel( void ) {
 	}
 
 	const char *model = spawnArgs.GetString( "model_world" );
-	const char *attach = spawnArgs.GetString( "joint_attach" );
+	const char * attach = spawnArgs.GetString( "joint_attach" );
 
+	
 	if ( model[0] && attach[0] ) {
 		ent->Show();
 		ent->SetModel( model );
@@ -1175,6 +1197,7 @@ void rvWeapon::InitWorldModel( void ) {
 		ent->SetModel( "" );
 		ent->Hide();
 	}
+
 
 	// the renderEntity is reused, so the relevant fields (except this one) appear to be correctly reinitialized
 	worldModel->GetRenderEntity()->suppressSurfaceMask = 0;
@@ -2561,22 +2584,25 @@ void rvWeapon::Attack( bool altAttack, int num_attacks, float spread, float fuse
 	}
 
 	// avoid all ammo considerations on an MP client
+	//DOUBLE G SWAG added isTurret to avoid ammo considerations
 	if ( !gameLocal.isClient ) {
-		// check if we're out of ammo or the clip is empty
-		int ammoAvail = owner->inventory.HasAmmo( ammoType, ammoRequired );
-		if ( !ammoAvail || ( ( clipSize != 0 ) && ( ammoClip <= 0 ) ) ) {
-			return;
-		}
+		if(!isTurret){
+			// check if we're out of ammo or the clip is empty
+			int ammoAvail = owner->inventory.HasAmmo( ammoType, ammoRequired );
+			if ( !ammoAvail || ( ( clipSize != 0 ) && ( ammoClip <= 0 ) ) ) {
+				return;
+			}
 
-		owner->inventory.UseAmmo( ammoType, ammoRequired );
-		if ( clipSize && ammoRequired ) {
- 			clipPredictTime = gameLocal.time;	// mp client: we predict this. mark time so we're not confused by snapshots
-			ammoClip -= 1;
-		}
+			owner->inventory.UseAmmo( ammoType, ammoRequired );
+			if ( clipSize && ammoRequired ) {
+ 				clipPredictTime = gameLocal.time;	// mp client: we predict this. mark time so we're not confused by snapshots
+				ammoClip -= 1;
+			}
 
-		// wake up nearby monsters
-		if ( !wfl.silent_fire ) {
-			gameLocal.AlertAI( owner );
+			// wake up nearby monsters
+			if ( !wfl.silent_fire ) {
+				gameLocal.AlertAI( owner );
+			}
 		}
 	}
 
