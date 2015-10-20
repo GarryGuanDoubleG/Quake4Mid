@@ -132,7 +132,7 @@ entityDef item_metal
 	"editor_maxs"			"10 10 16"
 	"spawnclass"			"idItem"
 	"model"				"models/items/ammo/ammo_box.lwo"
-	"inv_metals"			"10"
+	"inv_metal"			"10"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"size"				"32"
 	"snd_acquire"			"pickup_armor_shard"

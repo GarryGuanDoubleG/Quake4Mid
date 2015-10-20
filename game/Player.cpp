@@ -8651,30 +8651,37 @@ void idPlayer::PerformImpulse( int impulse ) {
 			break;
 		}
 
-
+/*
 		//DOUBLE G HERE. Start of keys for IMPULSES
 		case IMPULSE_41: {
 			common->Printf("Testing if 41 works \n");
 			inventory.selectedMetal = !inventory.selectedMetal;
 			hud->SetStateBool("SelectedMetal", inventory.selectedMetal);
 			hud->HandleNamedEvent("SelectMetal");
+
 			break;
 		}
 		case IMPULSE_42: {
 			common->Printf("Testing 42 \n");
+			inventory.selectedLightning = !inventory.selectedLightning;
+			hud->SetStateBool("SelectedMetal", inventory.selectedLightning);
 			hud->HandleNamedEvent("SelectLightning");
 			break;
 		}
 		case IMPULSE_43: {
 			common->Printf("Testing 43 \n");
+			inventory.selectedExplosive = !inventory.selectedExplosive;
+			hud->SetStateBool("SelectedExplosive", inventory.selectedExplosive);
 			hud->HandleNamedEvent("SelectExplosive");
 			break;
 		}
 		case IMPULSE_44: {
-			common->Printf("Testing 44 \n");
+		/*	common->Printf("Testing 44 \n");
+			inventory.selectedOrbital = !inventory.selectedOrbital;
+			hud->SetStateBool("SelectedOrbital", inventory.selectedOrbital);
 			hud->HandleNamedEvent("SelectOrbital");
-			break;
-		}
+			break;*/
+/*		}
 		case IMPULSE_45: {
 			common->Printf("Testing 45 \n");
 			break;
@@ -8695,7 +8702,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 			common->Printf("Testing 49 \n");
 			break;
 		}
-
+		*/
 		//END
 
 // RITUAL BEGIN
