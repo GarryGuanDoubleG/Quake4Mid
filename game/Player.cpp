@@ -210,8 +210,9 @@ void idInventory::Clear( void ) {
 	metals				= 0;
 	Turrets				= 0;
 
-	madeLightning =	madeOrbital = madeExplosive =TurretEnabled = false;
+	haveLightning =	haveOrbital = haveExplosive = false;
 	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
+	enableLightning =	enableOrbital = enableExplosive = TurretEnabled = false;
 	memset( ammo, 0, sizeof( ammo ) );
 
 	ClearPowerUps();
@@ -3405,16 +3406,24 @@ void idPlayer::UpdateItemStats ( idUserInterface *_hud)
 {
 	//update stats. Let the impulse call enable / disable for 
 	//gui changes
-	_hud->SetStateBool("haveLightning", inventory.madeLightning);
-	_hud->SetStateBool("haveOrbital", inventory.madeOrbital);
-	_hud->SetStateBool("haveExplosive", inventory.madeExplosive);
+	_hud->SetStateBool("haveLightning", inventory.haveLightning);
+	_hud->SetStateBool("haveOrbital", inventory.haveOrbital);
+	_hud->SetStateBool("haveExplosive", inventory.haveExplosive);
 	_hud->SetStateBool("TurretEnabled", inventory.TurretEnabled);
+	_hud->SetStateBool("enableLightning", inventory.enableLightning);
+	_hud->SetStateBool("enableExplosive", inventory.enableExplosive);
+	_hud->SetStateBool("enableOrbital", inventory.enableOrbital);
 
-	_hud->SetStateInt("ggMetals", inventory.metals);
-	_hud->SetStateInt("ggLightnings", inventory.lightnings);
-	_hud->SetStateInt("ggOrbitals", inventory.orbitals);
-	_hud->SetStateInt("ggExplosives", inventory.explosives);
+
+	_hud->SetStateInt("ggMetals", inventory.ggMetals);
+	_hud->SetStateInt("ggLightnings", inventory.ggLightnings);
+	_hud->SetStateInt("ggOrbitals", inventory.ggOrbitals);
+	_hud->SetStateInt("ggExplosives", inventory.ggExplosives);
 	_hud->SetStateInt("numTurrets",inventory.Turrets);
+
+	_hud->HandleNamedEvent("updateLightningMod");
+	_hud->HandleNamedEvent("updateExplosiveMod");
+	_hud->HandleNamedEvent("updateOrbitalMod");
 
 }
 
@@ -5204,7 +5213,6 @@ bool idPlayer::GiveInventoryItem( idDict *item ) {
 	if ( gameLocal.isMultiplayer && spectating ) {
 		return false;
 	}
-	common->Printf("Number of metals in inventory is %i \n",inventory.metals);
 
 // RAVEN BEGIN
 // mwhitlock: Dynamic memory consolidation
@@ -8651,37 +8659,37 @@ void idPlayer::PerformImpulse( int impulse ) {
 			break;
 		}
 
-/*
-		//DOUBLE G HERE. Start of keys for IMPULSES
+	//DOUBLE G HERE. Start of keys for IMPULSES
+
 		case IMPULSE_41: {
 			common->Printf("Testing if 41 works \n");
 			inventory.selectedMetal = !inventory.selectedMetal;
 			hud->SetStateBool("SelectedMetal", inventory.selectedMetal);
 			hud->HandleNamedEvent("SelectMetal");
-
 			break;
 		}
 		case IMPULSE_42: {
 			common->Printf("Testing 42 \n");
 			inventory.selectedLightning = !inventory.selectedLightning;
-			hud->SetStateBool("SelectedMetal", inventory.selectedLightning);
+			hud->SetStateBool("SelectedLightning", inventory.selectedLightning);
 			hud->HandleNamedEvent("SelectLightning");
 			break;
 		}
 		case IMPULSE_43: {
 			common->Printf("Testing 43 \n");
 			inventory.selectedExplosive = !inventory.selectedExplosive;
+			common->Printf("Selected Explosive is %s ", inventory.selectedExplosive ? " true \n" : " false \n"); 
 			hud->SetStateBool("SelectedExplosive", inventory.selectedExplosive);
 			hud->HandleNamedEvent("SelectExplosive");
 			break;
 		}
 		case IMPULSE_44: {
-		/*	common->Printf("Testing 44 \n");
+			common->Printf("Testing 44 \n");
 			inventory.selectedOrbital = !inventory.selectedOrbital;
 			hud->SetStateBool("SelectedOrbital", inventory.selectedOrbital);
 			hud->HandleNamedEvent("SelectOrbital");
-			break;*/
-/*		}
+			break;
+		}
 		case IMPULSE_45: {
 			common->Printf("Testing 45 \n");
 			break;
@@ -8702,7 +8710,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 			common->Printf("Testing 49 \n");
 			break;
 		}
-		*/
+		
 		//END
 
 // RITUAL BEGIN

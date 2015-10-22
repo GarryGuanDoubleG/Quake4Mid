@@ -209,17 +209,21 @@ public:
 	int						weaponMods[ MAX_WEAPONS ];
 	//DOUBLE G SWAG EDIt
 	//count of material
-	int						metals;
-	int						lightnings;
-	int						orbitals;
-	int						explosives;
+	int						ggMetals;
+	int						ggLightnings;
+	int						ggOrbitals;
+	int						ggExplosives;
 	int						Turrets;
 
 	//mods take 1 metal 1 lightning
-	bool					madeLightning;
-	bool					madeOrbital;
-	bool					madeExplosive;
+	bool					haveLightning;
+	bool					haveOrbital;
+	bool					haveExplosive;
+	//allow mod to be activated / disabled
 	bool					TurretEnabled;//can make turret or not
+	bool					enableLightning;
+	bool					enableOrbital;
+	bool					enableExplosive;
 	//states for hud
 	bool					selectedMetal;
 	bool					selectedLightning;

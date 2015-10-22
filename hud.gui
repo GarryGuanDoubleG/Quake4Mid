@@ -29,6 +29,7 @@ windowDef Desktop
 	bool 	"selectedLightning"	0
 	bool 	"selectedExplosive"	0
 	bool 	"selectedOrbital"	0
+
 	//states for weap mods
 	bool	"haveOrbital"  	 	0
 	bool	"haveLightning" 	0
@@ -90,7 +91,7 @@ windowDef Desktop
 	}
 	//changes color of inventory slots
 	onNamedEvent selectMetal{
-		if(selectedMetal){
+		if(selectedMetal == 0){
 			set "item_0::matcolor" "0,1,1,1";
 		}
 		else{
@@ -98,7 +99,7 @@ windowDef Desktop
 		}
 	}
 	onNamedEvent selectLightning{
-		if(selectedLightning){
+		if(selectedLightning == 0){
 			set "item_1::matcolor" "0,1,1,1";
 		}
 		else{
@@ -106,7 +107,7 @@ windowDef Desktop
 		}
 	}
 	onNamedEvent selectExplosive{
-		if(selectedMetal){
+		if(selectedExplosive == 0){
 			set "item_2::matcolor" "0,1,1,1";
 		}
 		else{
@@ -115,7 +116,7 @@ windowDef Desktop
 	}
 	
 	onNamedEvent selectOrbital{
-		if(selectedMetal){
+		if(selectedOrbital == 0){
 			set "item_3::matcolor" "0,1,1,1";
 		}
 		else{
