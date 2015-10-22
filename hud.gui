@@ -3,7 +3,10 @@ windowDef Desktop
 	rect	0,0,640,480
 	visible	1
 	menugui	1
-
+	::	buyButtonVisuals_weapons_height
+	-	5
+	)	)
+	/	2
 	definevec4	"ws_on"	1,0.5,0,1
 	definevec4	"ws_off"	0.658,0.639,0.376,0.6
 	definevec4	"ws_glowon"	0.7,0.8,0.5,1
@@ -16,28 +19,14 @@ windowDef Desktop
 	definevec4	"healthicon_mp"	0.980,0.168,0.0196,0.8
 	definevec4	"armoricon_mp"	0.968,0.752,0.0156,0.8
 	definevec4	"white"	1,1,1,1
-	definefloat	"buyButtonMouseArea_weapons_width"	desktop::buyButtonVisuals_weapons_width-35
-	definefloat	"buyButtonMouseArea_weapons_height"	desktop::buyButtonVisuals_weapons_height-5
+	definefloat	"buyButtonMouseArea_weapons_width"	desktop
+	definefloat	"buyButtonMouseArea_weapons_height"	desktop
 	float	"objdone"	0
 	float	"weapswitch"	0
 	float	"teamstrogg"	0
 	float	"hidden"	0
 	definefloat	"showGunInfo"	1
 	definefloat	"switchLeft"	(640-((gui::weaponcount*30)-2
-	
-	bool 	"selectedMetal"		0
-	bool 	"selectedLightning"	0
-	bool 	"selectedExplosive"	0
-	bool 	"selectedOrbital"	0
-
-	//states for weap mods
-	bool	"haveOrbital"  	 	0
-	bool	"haveLightning" 	0
-	bool 	"haveExplosive"		0
-	int	"ggMetals"		0
-	int 	"ggLightnings"		0
-	int 	"ggOrbitals"		0
-	int 	"ggExplosives"		0
 
 	onInit {
 		namedEvent "updateHealth";
@@ -89,82 +78,82 @@ windowDef Desktop
 			set "showcursor" "1";
 		}
 	}
-	//changes color of inventory slots
-	onNamedEvent selectMetal{
-		if(selectedMetal == 0){
+
+	onNamedEvent SelectMetal {
+		if("gui::selectedMetal" == 0){
 			set "item_0::matcolor" "0,1,1,1";
 		}
 		else{
-		set "item_0::matcolor" "0,0.976,0.486,1"; 
+			set "item_0::matcolor" "0,0.976,0.486,1"; 
 		}
 	}
-	onNamedEvent selectLightning{
-		if(selectedLightning == 0){
+
+	onNamedEvent SelectLightning {
+		if("gui::selectedLightning" == 0){
 			set "item_1::matcolor" "0,1,1,1";
 		}
 		else{
-		set "item_1::matcolor" "0,0.976,0.486,1"; 
+			set "item_1::matcolor" "0,0.976,0.486,1"; 
 		}
 	}
-	onNamedEvent selectExplosive{
-		if(selectedExplosive == 0){
+
+	onNamedEvent SelectExplosive {
+		if("gui::selectedExplosive" == 0){
 			set "item_2::matcolor" "0,1,1,1";
 		}
 		else{
-		set "item_2::matcolor" "0,0.976,0.486,1"; 
+			set "item_2::matcolor" "0,0.976,0.486,1"; 
 		}
 	}
-	
-	onNamedEvent selectOrbital{
-		if(selectedOrbital == 0){
+
+	onNamedEvent SelectOrbital {
+		if("gui::selectedOrbital" == 0){
 			set "item_3::matcolor" "0,1,1,1";
 		}
 		else{
-		set "item_3::matcolor" "0,0.976,0.486,1"; 
+			set "item_3::matcolor" "0,0.976,0.486,1"; 
 		}
 	}
 
-
-	}
-	onNamedEvent enableOrbital {
-		set "item_8::matcolor" "0,0.976,0.486,1";
-		haveOrbital = 1;
-	}
-	//
-	onNamedEvent disableOrbital {
-		if( haveOrbital == 0 ){
-			set "item_8::matcolor" "1,0,0,1";
-		}
-		else{
-			set "item_8::matcolor" "0,1,1,1";
-		}
-	}
-
-	onNamedEvent enableExplode {
-		set "item_9::matcolor" "0,0.976,0.486,1";
-		haveExplosive = 1;
-	}
-
-	onNamedEvent disableExplode {
-		if( haveExplosive == 0 ){
+	onNamedEvent updateLightningMod {
+		
+		if("gui::haveLightning" == 0){
 			set "item_9::matcolor" "1,0,0,1";
 		}
 		else{
 			set "item_9::matcolor" "0,1,1,1";
 		}
+		
+		if("gui::enableLightning" == 1){
+			set "item_9::matcolor" "0,0.976,0.486,1";	
+		}
 	}
 
-	onNamedEvent enableLightning {
-		set "item_10::matcolor" "0,0.976,0.486,1";
-		haveLightning = 1;
-	}
-
-	onNamedEvent disableLightning {
-		if( haveLightning == 0 ){
-			set "item_10::matcolor" "1,0,0,1";
+	onNamedEvent updateExplosiveMod {
+		
+		if("gui::haveExplosive" == 0){
+			set "item_9::matcolor" "1,0,0,1";
 		}
 		else{
-			set "item_10::matcolor" "0,1,1,1";
+			set "item_9::matcolor" "0,1,1,1";
+		}
+		
+		if("gui::enableExplosive" == 1){
+			set "item_9::matcolor" "0,0.976,0.486,1";	
+		}
+	}
+
+	onNamedEvent updateOrbitalMod {
+		
+		if("gui::haveOrbital" == 0){
+			set "item_8::matcolor" "1,0,0,1";
+		}
+		else{
+			set "item_8::matcolor" "0,1,1,1";
+		}
+		
+		if("gui::enableOrbital" == 1){
+			set "item_8::matcolor" "0,0.976,0.486,1";	
 		}
 	}
 
@@ -2252,78 +2241,71 @@ windowDef Desktop
 	windowDef inventory_grid
 	{
 		rect	2,1,640,480
-		visible	 0
-		windowDef Item_0
+		visible	1
+		windowDef item_0
 		{
 			rect	19,89,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
 			forecolor	1,1,1,1
-			text		"gui::metal_count"
+			text	"gui::ggMetals"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
 			textalignx	50
 		}
-		windowDef Item_1
+		windowDef item_1
 		{
 			rect	16,167,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text		"gui::ggLightning"
+			text	"gui::ggLightning"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
 			textalignx	50
-
-	
 		}
-		windowDef Item_2
+		windowDef item_2
 		{
 			rect	16,242,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text		"gui::ggExplosive"
+			text	"gui::ggExplosive"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
 			textalignx	50
-
 		}
-		windowDef Item_3
+		windowDef item_3
 		{
 			rect	15,323,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,1,1,1
-			text		"gui::ggOrbital"
+			text	"gui::ggOrbital"
 			textscale	1
 			font	"fonts/marine"
 			nowrap	1
 			textalignx	50
-
 		}
-		//Orbital mod
-		windowDef Item_8
+		windowDef item_8
 		{
 			rect	519,170,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	1,0,0,1
 		}
-		//Explosive
-		windowDef Item_9
+		windowDef item_9
 		{
 			rect	520,242,100,100
 			visible	1
 			background	"gfx/guis/hud/valbar"
 			matcolor	1,0,0,1
 		}
-		//Lightning
-		windowDef Item_10
+		windowDef item_10
 		{
 			rect	519,323,100,100
 			visible	1
@@ -2337,7 +2319,6 @@ windowDef Desktop
 			background	"gfx/guis/ggOrbit.tga"
 			matcolor	1,1,1,1
 		}
-		//big box in the middle. Crafts turret
 		windowDef CraftTurret
 		{
 			rect	118,-32,400,250
@@ -2345,12 +2326,11 @@ windowDef Desktop
 			background	"gfx/guis/hud/valbar"
 			matcolor	0,0.976,0.486,1
 			forecolor	1,1,1,1
-			text	"0"
+			text	"gui::Turrets"
 			textscale	2
 			textalignx	220
 			textaligny	50
 		}
-		//icons
 		windowDef gglightning
 		{
 			rect	531,351,47,47

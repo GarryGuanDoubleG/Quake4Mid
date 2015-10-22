@@ -3707,10 +3707,17 @@ void idAI::OnDeath( void ){
 */
 	//got yo drops right here
 	common->Printf("def_dropsItem1 item_metal\n");
-	Cmd_Spawn_f(idCmdArgs("spawn item_metal",false));
+	spawnArgs.Set( "def_dropsItem1", "item_ggMetals" );
+	spawnArgs.Set( "def_dropsItem2", "item_ggLightning" );
+	spawnArgs.Set( "def_dropsItem3", "item_ggExplosive" );
+	spawnArgs.Set( "def_dropsItem4", "item_ggOrbital" );
+
+	/*
+	Cmd_Spawn_f(idCmdArgs("spawn item_ggMetals",false));
 	Cmd_Spawn_f(idCmdArgs("spawn item_ggLightning",false));
 	Cmd_Spawn_f(idCmdArgs("spawn item_ggExplosive",false));
 	Cmd_Spawn_f(idCmdArgs("spawn item_ggOrbital",false));
+	*/
 
 	//spawned loot, reset tracking variables
 

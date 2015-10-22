@@ -210,9 +210,9 @@ public:
 	//DOUBLE G SWAG EDIt
 	//count of material
 	int						ggMetals;
-	int						ggLightnings;
-	int						ggOrbitals;
-	int						ggExplosives;
+	int						ggLightning;
+	int						ggOrbital;
+	int						ggExplosive;
 	int						Turrets;
 
 	//mods take 1 metal 1 lightning
@@ -555,6 +555,10 @@ public:
 	
 	// Inventory
 	bool					GiveInventoryItem( idDict *item );
+	//DOUBLE G SWAG
+	//Increments item values in inv
+	bool					GiveGGInventoryItem ( idDict *item);
+	//END
 	void					RemoveInventoryItem( idDict *item );
 	bool					GiveInventoryItem( const char *name );
 	void					RemoveInventoryItem( const char *name );

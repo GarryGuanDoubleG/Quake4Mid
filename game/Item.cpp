@@ -587,11 +587,20 @@ bool idItem::GiveToPlayer( idPlayer *player ) {
 	if ( player == NULL ) {
 		return false;
 	}
+	common->Printf("Give to player is called \n");
+	//DOUBLE G START
+	if( spawnArgs.GetBool( "inv_ggItem" ) )
+	{
+		return player->GiveGGInventoryItem( &spawnArgs );
+	}
+	//END
 
 	if ( spawnArgs.GetBool( "inv_carry" ) ) {
 		return player->GiveInventoryItem( &spawnArgs );
 	} 
 	
+	common->Printf("Inv Carry did not return\n");
+
 	// Handle the special ammo pickup that gives ammo for the weapon the player currently has
 	if ( spawnArgs.GetBool( "item_currentWeaponAmmo" ) ) {
 		const char *ammoName = player->weapon->GetAmmoNameForIndex(player->weapon->GetAmmoType());

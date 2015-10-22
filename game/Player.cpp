@@ -204,12 +204,9 @@ void idInventory::Clear( void ) {
 	maxarmor			= 0;
 	secretAreasDiscovered = 0;
 	//DOUBLE G SWAG EDIT
-	lightnings			= 0;
-	explosives			= 0;
-	orbitals			= 0;
-	metals				= 0;
-	Turrets				= 0;
 
+	
+	ggMetals = ggLightning = ggExplosive = ggOrbital = Turrets = 0;
 	haveLightning =	haveOrbital = haveExplosive = false;
 	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
 	enableLightning =	enableOrbital = enableExplosive = TurretEnabled = false;
@@ -3410,21 +3407,22 @@ void idPlayer::UpdateItemStats ( idUserInterface *_hud)
 	_hud->SetStateBool("haveOrbital", inventory.haveOrbital);
 	_hud->SetStateBool("haveExplosive", inventory.haveExplosive);
 	_hud->SetStateBool("TurretEnabled", inventory.TurretEnabled);
+	//used for weapon mods
 	_hud->SetStateBool("enableLightning", inventory.enableLightning);
 	_hud->SetStateBool("enableExplosive", inventory.enableExplosive);
 	_hud->SetStateBool("enableOrbital", inventory.enableOrbital);
 
-
+	//changes number for each craft Item
 	_hud->SetStateInt("ggMetals", inventory.ggMetals);
-	_hud->SetStateInt("ggLightnings", inventory.ggLightnings);
-	_hud->SetStateInt("ggOrbitals", inventory.ggOrbitals);
-	_hud->SetStateInt("ggExplosives", inventory.ggExplosives);
-	_hud->SetStateInt("numTurrets",inventory.Turrets);
-
+	_hud->SetStateInt("ggLightning", inventory.ggLightning);
+	_hud->SetStateInt("ggOrbital", inventory.ggOrbital);
+	_hud->SetStateInt("ggExplosive", inventory.ggExplosive);
+	_hud->SetStateInt("Turrets",inventory.Turrets);
+	//call hudEvents to update
 	_hud->HandleNamedEvent("updateLightningMod");
 	_hud->HandleNamedEvent("updateExplosiveMod");
 	_hud->HandleNamedEvent("updateOrbitalMod");
-
+	
 }
 
 
@@ -5232,6 +5230,29 @@ bool idPlayer::GiveInventoryItem( idDict *item ) {
 	}
 	
 	return true;
+}
+
+/*
+***************************
+DOUBLE G SWAG START
+===============
+idPlayer::GiveInventoryItem
+===============
+***************************
+*/
+bool idPlayer::GiveGGInventoryItem( idDict *item ){
+	common->Printf("Give GG Inventory Item Start \n");
+
+	const idDict *ggMetal = item->FindKey("inv_ggMetals");
+	const idDict *ggLightning = item->FindKey("inv_ggLightning");
+	const idDict *ggExplosive = item->FindKey("inv_ggExplosive");
+	const idDict *ggOrbital = item->FindKey("inv_ggOrbital");
+
+	if(ggMetal){
+
+	}
+
+	return false;
 }
 
 /*
@@ -8664,6 +8685,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_41: {
 			common->Printf("Testing if 41 works \n");
 			inventory.selectedMetal = !inventory.selectedMetal;
+			common->Printf("Selected Metal is %s ", inventory.selectedMetal ? " true \n" : " false \n"); 
 			hud->SetStateBool("SelectedMetal", inventory.selectedMetal);
 			hud->HandleNamedEvent("SelectMetal");
 			break;
@@ -8671,6 +8693,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_42: {
 			common->Printf("Testing 42 \n");
 			inventory.selectedLightning = !inventory.selectedLightning;
+			common->Printf("Selected Lightning is %s ", inventory.selectedLightning? " true \n" : " false \n"); 
 			hud->SetStateBool("SelectedLightning", inventory.selectedLightning);
 			hud->HandleNamedEvent("SelectLightning");
 			break;
@@ -8686,6 +8709,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 		case IMPULSE_44: {
 			common->Printf("Testing 44 \n");
 			inventory.selectedOrbital = !inventory.selectedOrbital;
+			common->Printf("Selected Explosive is %s ", inventory.selectedOrbital ? " true \n" : " false \n"); 
 			hud->SetStateBool("SelectedOrbital", inventory.selectedOrbital);
 			hud->HandleNamedEvent("SelectOrbital");
 			break;

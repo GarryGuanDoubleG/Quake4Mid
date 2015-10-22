@@ -42,6 +42,8 @@ entityDef item_default {
  	"editor_bool not_easy"			"set to 1 and item will not spawn in easy mode"
  	"editor_bool not_medium"		"set to 1 and item will not spawn in medium mode"
  	"editor_bool not_hard"			"set to 1 and item will not spawn in hard mode"
+	"editor_bool ggItem"			"set to 1 if it's a swag GG item"
+
 	//"editor_copy3"			"inv_name"
 	//"editor_copy4"			"inv_item"
 	//"editor_copy5"			"inv_objective"
@@ -124,15 +126,18 @@ entityDef item_objectivefailed {
 	"editor_ignore"			"0"
 }
 
-entityDef item_metal
+entityDef item_ggMetals
 {
 	"inherit"			"item_default"
 	"editor_color"			".3 .3 1"
 	"editor_mins"			"-10 -10 0"
 	"editor_maxs"			"10 10 16"
+
 	"spawnclass"			"idItem"
+	"inv_carry"			"1"
+	"inv_ggMetals"			"10"
+	
 	"model"				"models/items/ammo/ammo_box.lwo"
-	"inv_metal"			"10"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"size"				"32"
 	"snd_acquire"			"pickup_armor_shard"
@@ -144,9 +149,12 @@ entityDef item_ggLightning
 	"editor_color"			".3 .3 1"
 	"editor_mins"			"-10 -10 0"
 	"editor_maxs"			"10 10 16"
+
 	"spawnclass"			"idItem"
+	"inv_ggLightning"		"1"
+	"inv_carry"			"1"
+
 	"model"				"models/items/ammo/ammo_box.lwo"
-	"inv_lightnings"		"1"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"size"				"32 32 32"
 	"snd_acquire"			"pickup_armor_shard"
@@ -158,10 +166,12 @@ entityDef item_ggOrbital
 	"editor_color"			".3 .3 1"
 	"editor_mins"			"-10 -10 0"
 	"editor_maxs"			"10 10 16"
+
 	"spawnclass"			"idItem"
+	"inv_carry"			"1"
+	"inv_ggOrbital"			"1"
+
 	"model"				"models/pick_ups/mp_pickups/mp_mega_health.lwo"
-	"inv_orbitals"			"1"
-	"inv_lightnings"		"1"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"size"				"32 32 32"
 	"snd_acquire"			"pickup_armor_shard"
@@ -173,11 +183,13 @@ entityDef item_ggExplosive
 	"editor_color"			".3 .3 1"
 	"editor_mins"			"-10 -10 0"
 	"editor_maxs"			"10 10 16"
+
 	"spawnclass"			"idItem"
+	"inv_ggExplosive"		"1"
+	"inv_carry"			"1"
+
 	"model"				"models/pick_ups/sp_pickups/sp_grenades.lwo"
 	"size"				"32 32 32"
-	"inv_explosives"		"1"
-	"inv_metal"			"10"
 	"fx_idle"			"effects/weapons/lightninggun/pickup.fx"
 	"snd_acquire"			"pickup_armor_shard"
 }
