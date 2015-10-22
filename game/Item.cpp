@@ -589,12 +589,12 @@ bool idItem::GiveToPlayer( idPlayer *player ) {
 	}
 	common->Printf("Give to player is called \n");
 	//DOUBLE G START
-	if( spawnArgs.GetBool( "inv_ggItem" ) )
+	if( spawnArgs.GetBool( "ggItem" ) )
 	{
 		return player->GiveGGInventoryItem( &spawnArgs );
 	}
 	//END
-
+	common->Printf("Calling inv_carry\n");
 	if ( spawnArgs.GetBool( "inv_carry" ) ) {
 		return player->GiveInventoryItem( &spawnArgs );
 	} 

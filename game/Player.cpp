@@ -5243,13 +5243,30 @@ idPlayer::GiveInventoryItem
 bool idPlayer::GiveGGInventoryItem( idDict *item ){
 	common->Printf("Give GG Inventory Item Start \n");
 
-	const idDict *ggMetal = item->FindKey("inv_ggMetals");
-	const idDict *ggLightning = item->FindKey("inv_ggLightning");
-	const idDict *ggExplosive = item->FindKey("inv_ggExplosive");
-	const idDict *ggOrbital = item->FindKey("inv_ggOrbital");
+	const idKeyValue *ggMetal = item->FindKey("inv_ggMetals");
+	const idKeyValue *ggLightning = item->FindKey("inv_ggLightning");
+	const idKeyValue *ggExplosive = item->FindKey("inv_ggExplosive");
+	const idKeyValue *ggOrbital = item->FindKey("inv_ggOrbital");
 
 	if(ggMetal){
-
+		common->Printf("GiveGGInventory Item: Metal \n");
+		inventory.ggMetals += 10;
+		return true;
+	}
+	if(ggLightning){
+		common->Printf("GiveGGInventory Item: Lightning \n");
+		inventory.ggLightning += 1;
+		return true;
+	}
+	if(ggExplosive){
+		common->Printf("GiveGGInventory Item: Explosive \n");
+		inventory.ggExplosive += 1;
+		return true;
+	}
+	if(ggOrbital){
+		common->Printf("GiveGGInventory Item: Orbital \n");
+		inventory.ggOrbital += 1;
+		return true;
 	}
 
 	return false;
