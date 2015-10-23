@@ -229,6 +229,8 @@ public:
 	bool					selectedLightning;
 	bool					selectedExplosive;
 	bool					selectedOrbital;
+	//for projectile
+	bool					enabledMod;
 	//END
  	// multiplayer
  	int						ammoPredictTime;
@@ -359,6 +361,12 @@ public:
 	idVec3					lootOrigin;
 	idMat3					lootAxis;
 	//END
+
+	//DOUBLE G
+	//Used for explosive mod
+	bool					SysCmdSpawn;
+	idVec3					SysCmdSpawnOrg;
+	idMat3					SysCmdSpawnAxis;
 
 	rvWeapon*						weapon;
 	idEntityPtr<rvViewWeapon>		weaponViewModel;

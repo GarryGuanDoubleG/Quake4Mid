@@ -1139,10 +1139,14 @@ void Cmd_Spawn_f( const idCmdArgs &args ) {
 		common->Printf("Spawn Loot\n");
 		org = player->lootOrigin;
 	}
-	//end
+	else if(player->SysCmdSpawn){
+		common->Printf("Spawn Rocket from Explode Mod\n");
+		org = player->SysCmdSpawnOrg;
+	}
 	else{
 		org = player->GetPhysics()->GetOrigin() + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
 	}
+	//end
 	dict.Set( "origin", org.ToString() );
 
 	for( i = 2; i < args.Argc() - 1; i += 2 ) {
@@ -1164,6 +1168,7 @@ void Cmd_Spawn_f( const idCmdArgs &args ) {
 // RAVEN END
 #endif // !_MPBETA
 }
+
 
 // RAVEN BEGIN
 // ddynerman: MP spawning command for performance testing

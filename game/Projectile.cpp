@@ -1048,8 +1048,21 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 	if( gameLocal.isClient ) {
 		return true;
 	}
+	else
+		Explode( &collision, false, ignore );
+	//Double G Swag start
+	//spawning a rocket when projectile collides to get the explosion effect
 
-	Explode( &collision, false, ignore );
+	if(explosiveMod){
+		idPlayer * temp = gameLocal.GetLocalPlayer();
+		temp->SysCmdSpawn = true;
+		this->GetPosition(temp->SysCmdSpawnOrg,temp->SysCmdSpawnAxis);
+		common->Printf("In Projectile collide. Calling Cmd Spawn_f\n");
+		Cmd_Spawn_f(idCmdArgs("spawn projectile_rocket",false));
+		temp->SysCmdSpawn = false;
+		temp->SysCmdSpawnOrg.Zero( );
+	}
+		
 
 	return true;
 }

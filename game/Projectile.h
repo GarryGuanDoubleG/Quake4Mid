@@ -67,6 +67,7 @@ public :
 
 	//Double G Swag Garry Start
 	//adding orbital rockets
+	bool					explosiveMod;
 	bool					isRocket;
 	float					RotationStep;
 	float					Rotation;

@@ -205,11 +205,13 @@ void idInventory::Clear( void ) {
 	secretAreasDiscovered = 0;
 	//DOUBLE G SWAG EDIT
 
-	
+	bool enabledMod = true;
 	ggMetals = ggLightning = ggExplosive = ggOrbital = Turrets = 0;
 	haveLightning =	haveOrbital = haveExplosive = false;
 	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
 	enableLightning =	enableOrbital = enableExplosive = TurretEnabled = false;
+
+	//END
 	memset( ammo, 0, sizeof( ammo ) );
 
 	ClearPowerUps();
@@ -9470,7 +9472,7 @@ Called every tic for each player
 */
 void idPlayer::Think( void ) {
 	renderEntity_t *headRenderEnt;
- 
+
 	if ( talkingNPC ) {
 		if ( !talkingNPC.IsValid() ) {
 			talkingNPC = NULL;
