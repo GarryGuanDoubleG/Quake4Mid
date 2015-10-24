@@ -250,7 +250,7 @@ void idProjectile::Create( idEntity* _owner, const idVec3 &start, const idVec3 &
 	//DOUBLE G SWAG
 	RotationStep = 10.0/360.0;
 	Rotation	 = 0.0;
-
+	explosiveMod = false;
 	//END
 	
 	Unbind();
@@ -530,8 +530,8 @@ idProjectile::Think
 void idProjectile::Think( void ) {
 	// run physics
 		//Double G Swag call RocketThink()
-	if(isRocket){
-		RocketThink();
+	if(gameLocal.GetLocalPlayer( )->inventory.enableOrbital){
+		OrbitalThink();
 		return;
 	}
 	//END
@@ -610,7 +610,7 @@ Double G Swag Garry
 idProjectile::rocketThink
 ================
 */
- void idProjectile::RocketThink(void){
+ void idProjectile::OrbitalThink(void){
 
 
 		// Update the velocity to match the changing speed
@@ -1048,21 +1048,12 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 	if( gameLocal.isClient ) {
 		return true;
 	}
-	else
-		Explode( &collision, false, ignore );
-	//Double G Swag start
-	//spawning a rocket when projectile collides to get the explosion effect
-
 	if(explosiveMod){
-		idPlayer * temp = gameLocal.GetLocalPlayer();
-		temp->SysCmdSpawn = true;
-		this->GetPosition(temp->SysCmdSpawnOrg,temp->SysCmdSpawnAxis);
-		common->Printf("In Projectile collide. Calling Cmd Spawn_f\n");
-		Cmd_Spawn_f(idCmdArgs("spawn projectile_rocket",false));
-		temp->SysCmdSpawn = false;
-		temp->SysCmdSpawnOrg.Zero( );
+		Explode( &collision, true, ignore );
 	}
-		
+	else{
+		Explode( &collision, false, ignore );
+	}
 
 	return true;
 }
@@ -1187,7 +1178,7 @@ idProjectile::Killed
 ================
 */
 void idProjectile::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
-	if ( spawnArgs.GetBool( "detonate_on_death" ) ) {
+	if ( spawnArgs.GetBool( "detonate_on_death" ) || explosiveMod) {
 		Explode( NULL, true );
 		physicsObj.ClearContacts();
 		physicsObj.PutToRest();

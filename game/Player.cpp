@@ -209,7 +209,7 @@ void idInventory::Clear( void ) {
 	ggMetals = ggLightning = ggExplosive = ggOrbital = Turrets = 0;
 	haveLightning =	haveOrbital = haveExplosive = false;
 	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
-	enableLightning =	enableOrbital = enableExplosive = TurretEnabled = false;
+	enableLightning = enableOrbital = enableExplosive = TurretEnabled = true;
 
 	//END
 	memset( ammo, 0, sizeof( ammo ) );
@@ -3799,7 +3799,7 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 		}	
 		//Double G Swag Start
 		//Adding  Key I event to make inventory visible
-
+		CraftItem( );
 		UpdateItemStats(_hud);
 		PressI(_hud);
 		
@@ -8674,8 +8674,20 @@ void idPlayer::PerformImpulse( int impulse ) {
 		}
 		case IMPULSE_24:{
 			GiveStuffToPlayer(this, "weapon_rocketlauncher",NULL);
-			common->Printf("Spawning monster_turret\n");
-			Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
+			if(inventory.enableExplosive)
+			{
+				common->Printf("Spawning Rocket monster_turret\n");
+				Cmd_Spawn_f(idCmdArgs("spawn monster_turret_rocket",false));
+			}
+			else if(inventory.enableOrbital)
+			{
+				common->Printf("Spawning Flying monster_turret\n");
+				Cmd_Spawn_f(idCmdArgs("spawn monster_turret_flying",false));
+			}
+			else{
+				common->Printf("Spawning monster_turret\n");
+				Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
+			}
 			break;
 		}
 		case IMPULSE_25:{
@@ -8725,6 +8737,7 @@ void idPlayer::PerformImpulse( int impulse ) {
 			hud->HandleNamedEvent("SelectExplosive");
 			break;
 		}
+		//orbital mod
 		case IMPULSE_44: {
 			common->Printf("Testing 44 \n");
 			inventory.selectedOrbital = !inventory.selectedOrbital;
@@ -8733,20 +8746,34 @@ void idPlayer::PerformImpulse( int impulse ) {
 			hud->HandleNamedEvent("SelectOrbital");
 			break;
 		}
+		//orbital mod
 		case IMPULSE_45: {
-			common->Printf("Testing 45 \n");
+			common->Printf("Testing 45. Orbital Mod \n");
+			inventory.enableOrbital = !inventory.enableOrbital;
 			break;
-		}
+		}//explosive mod
 		case IMPULSE_46: {
-			common->Printf("Testing 46 \n");
+
+			common->Printf("Testing 45. Explosive Mod \n");
+			inventory.enableExplosive = !inventory.enableExplosive;
+
+			if(inventory.enableExplosive){
+				common->Printf("Calling GiveWeaponMod");
+				GiveWeaponMod("weaponmod_explosive");
+				GiveWeaponMods(1);
+			}
+			common->Printf("GiveWeaponMod Finished");
+
 			break;
-		}
+		}//lightning mod.
 		case IMPULSE_47: {
 			common->Printf("Testing 47 \n");
+			inventory.enableLightning = !inventory.enableLightning;
 			break;
-		}
+		}//craft turret
 		case IMPULSE_48: {
-			common->Printf("Testing 48 \n");
+			common->Printf("SelectTurret \n");
+			inventory.selectedTurret = !inventory.selectedTurret;
 			break;
 		}
 		case IMPULSE_49: {
@@ -8821,7 +8848,86 @@ void idPlayer::PerformImpulse( int impulse ) {
 #endif
 //RAVEN END
 }
+
+/*
+***************************************************
+DOUBLE G SWAG CRAFTING TURRETS AND WEP MODS BOIZ
+==============
+idPlayer::CraftItem
+==============
+FINISHED
+***************************************************
+*/
+
+void idPlayer::CraftItem()
+{
+	if(!(inventory.selectedMetal || inventory.selectedLightning || inventory.selectedExplosive || inventory.selectedOrbital || inventory.selectedTurret ))
+	{
+		//nothing is selected
+		return;
+	}
+	if(inventory.selectedMetal)
+	{
+		if(inventory.selectedTurret)
+		{
+			if(inventory.ggMetals >= 5)
+			{
+				if(inventory.enableExplosive)
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_rocket",false));
+				else if(inventory.enableOrbital)
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_flying", false));
+				else
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
+
+				inventory.ggMetals -= 5;
+			}
+			else
+				common->Printf("Not enough metals to craft turret. Need at least 5\n");
+			inventory.selectedMetal = inventory.selectedTurret = false;
+		}
+
+		if(inventory.selectedLightning)
+		{
+			if(inventory.ggMetals >= 1 && inventory.ggLightning >= 1)
+			{
+				if(!inventory.haveLightning){
+					inventory.ggMetals -= 1;
+					inventory.ggLightning -= 1;
+					inventory.haveLightning = true;
+				}
+				inventory.selectedLightning = inventory.selectedMetal = false;
+			}
+		}
+		if(inventory.selectedExplosive)
+		{
+			if(inventory.ggMetals >= 1 && inventory.ggExplosive >= 1)
+			{
+				if(!inventory.haveExplosive){
+					inventory.ggMetals -= 1;
+					inventory.ggExplosive -= 1;
+					inventory.haveExplosive = true;
+				}
+				inventory.selectedExplosive = inventory.selectedMetal = false;
+			}
+		}
+		if(inventory.selectedOrbital)
+		{
+			if(inventory.ggMetals >= 1 && inventory.ggOrbital >= 1)
+			{
+				if(!inventory.haveOrbital){
+					inventory.ggMetals -= 1;
+					inventory.ggOrbital -= 1;
+					inventory.haveOrbital = true;
+				}
+				inventory.selectedOrbital = inventory.selectedMetal = false;
+			}
+		}
+	}
+
+}
+
    
+
 /*
 ==============
 idPlayer::HandleESC
@@ -9681,9 +9787,7 @@ void idPlayer::Think( void ) {
 
 	// set the push velocity on the weapon before running the physics
 	if ( weapon ) {
-		//DOUBLE G Edit
-		if(!weapon->isTurret)
-			weapon->SetPushVelocity( physicsObj.GetPushedLinearVelocity() );
+		weapon->SetPushVelocity( physicsObj.GetPushedLinearVelocity() );
 	}
 
 	EvaluateControls();

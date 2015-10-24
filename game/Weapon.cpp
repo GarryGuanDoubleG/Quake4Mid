@@ -518,7 +518,6 @@ rvWeapon::Init
 */
 void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg ) {
 	int i;
-	isTurret		= false;//if true, call Turret init;
 
 	viewModel		= _owner->GetWeaponViewModel( );
 	worldModel		= _owner->GetWeaponWorldModel( );
@@ -558,65 +557,6 @@ void rvWeapon::Init( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIn
    	// Associate the weapon with the view model
 	viewModel->weapon = this;
 }
-
-//DOUBLE G SWAG
-void rvWeapon::TurretInit( idPlayer* _owner, const idDeclEntityDef* def, int _weaponIndex, bool _isStrogg ) {
-	int i;
-
-	viewModel		= _owner->GetWeaponViewModel( );
-	worldModel		= _owner->GetWeaponWorldModel( );
-	weaponDef		= def; 
-	owner			= _owner;
-	scriptObject	= &viewModel->scriptObject;
-	weaponIndex 	= _weaponIndex;
-	mods			= owner->inventory.weaponMods[ weaponIndex ];
-	isStrogg		= _isStrogg;
-	spawnArgs = weaponDef->dict;
-
-
-	common->Printf("Setting Spawn Origin & Axis \n");
-	owner->GetPosition(SpawnOrigin,SpawnAxis);
-	SpawnOrigin += idVec3(0,0, 75);
-	scriptObject->Free();
-#ifdef _XENON
-	aimAssistFOV = spawnArgs.GetFloat( "aimAssistFOV", "10.0f" );
-#endif	
-
-	// Apply the mod dictionaries
-	for ( i = 0; i < MAX_WEAPONMODS; i ++ ) {		
-		const idDict* modDict;
-		if ( !(mods & (1<<i) ) ) {
-			continue;
-		}
-
-		const char* mod;
-		if ( !spawnArgs.GetString ( va("def_mod%d", i+1), "", &mod ) || !*mod ) { 
-			continue;
-		}
-		
-		modDict = gameLocal.FindEntityDefDict ( mod, false );
-		if ( !modDict ) {
-			continue;
-		}
-		
-		spawnArgs.Copy ( *modDict );
-   	}
-
-
-}
-//let child classes call spawn & think
-void rvWeapon::TurretSpawn( void ){
-	common->Printf("RvWeapon Turret Spawn CALLED \n");
-}
-//rocket launcher turretthink should call this
-//print to game to check
-void rvWeapon::TurretThink( void ){
-	common->Printf("RvWeapon Turret Think CALLED \n");
-}
-
-
-//DOUBLE G END
-
 
 /*
 ================
@@ -1079,10 +1019,6 @@ void rvWeapon::Think ( void ) {
 
 	if ( viewModel ) {
 		// set the physics position and orientation
-		if(isTurret){
-			viewModelOrigin = SpawnOrigin;
-			viewModelAxis = SpawnAxis;
-		}
 		viewModel->GetPhysics()->SetOrigin( viewModelOrigin );
 		viewModel->GetPhysics()->SetAxis( viewModelAxis );
  		viewModel->UpdateVisuals();
@@ -2586,23 +2522,21 @@ void rvWeapon::Attack( bool altAttack, int num_attacks, float spread, float fuse
 	// avoid all ammo considerations on an MP client
 	//DOUBLE G SWAG added isTurret to avoid ammo considerations
 	if ( !gameLocal.isClient ) {
-		if(!isTurret){
-			// check if we're out of ammo or the clip is empty
-			int ammoAvail = owner->inventory.HasAmmo( ammoType, ammoRequired );
-			if ( !ammoAvail || ( ( clipSize != 0 ) && ( ammoClip <= 0 ) ) ) {
-				return;
-			}
+		// check if we're out of ammo or the clip is empty
+		int ammoAvail = owner->inventory.HasAmmo( ammoType, ammoRequired );
+		if ( !ammoAvail || ( ( clipSize != 0 ) && ( ammoClip <= 0 ) ) ) {
+			return;
+		}
 
-			owner->inventory.UseAmmo( ammoType, ammoRequired );
-			if ( clipSize && ammoRequired ) {
- 				clipPredictTime = gameLocal.time;	// mp client: we predict this. mark time so we're not confused by snapshots
-				ammoClip -= 1;
-			}
+		owner->inventory.UseAmmo( ammoType, ammoRequired );
+		if ( clipSize && ammoRequired ) {
+ 			clipPredictTime = gameLocal.time;	// mp client: we predict this. mark time so we're not confused by snapshots
+			ammoClip -= 1;
+		}
 
-			// wake up nearby monsters
-			if ( !wfl.silent_fire ) {
-				gameLocal.AlertAI( owner );
-			}
+		// wake up nearby monsters
+		if ( !wfl.silent_fire ) {
+			gameLocal.AlertAI( owner );
 		}
 	}
 
@@ -2750,7 +2684,10 @@ void rvWeapon::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, con
 		// Create the projectile
 		proj = static_cast<idProjectile*>(ent);
 		proj->Create( owner, muzzleOrigin + startOffset, dir, NULL, owner->extraProjPassEntity );
-		/*Double G Swag Edit IN LINE*/proj->isRocket = false;
+		/*Double G Swag Edit*/
+		proj->isRocket = false;
+		proj->explosiveMod = owner->inventory.enableExplosive;
+		//END
 		projBounds = proj->GetPhysics()->GetBounds().Rotate( proj->GetPhysics()->GetAxis() );
 
 		// make sure the projectile starts inside the bounding box of the owner

@@ -3,6 +3,7 @@
 #pragma hdrstop
 
 #include "../Game_local.h"
+#include "AI_Manager.h"
 
 class rvMonsterTurretFlying : public idAI {
 public:
@@ -71,6 +72,10 @@ void rvMonsterTurretFlying::Spawn ( void ) {
 	InitSpawnArgsVariables();
 	shots		= 0;
 	
+	aiManager.RemoveTeammate(this);
+	spawnArgs.SetInt("team",AITEAM_MARINE);
+	team = AITEAM_MARINE;
+
 	actionBlasterAttack.Init ( spawnArgs,	"action_blasterAttack",	"Torso_BlasterAttack",	AIACTIONF_ATTACK );
 
 	//don't take damage until we open up

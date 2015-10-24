@@ -71,7 +71,7 @@ public :
 	bool					isRocket;
 	float					RotationStep;
 	float					Rotation;
-	virtual void			RocketThink( void );
+	virtual void			OrbitalThink( void );
 	//END
 	
 protected:

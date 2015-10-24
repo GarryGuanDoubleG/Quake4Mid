@@ -229,6 +229,7 @@ public:
 	bool					selectedLightning;
 	bool					selectedExplosive;
 	bool					selectedOrbital;
+	bool					selectedTurret;
 	//for projectile
 	bool					enabledMod;
 	//END
@@ -363,10 +364,11 @@ public:
 	//END
 
 	//DOUBLE G
-	//Used for explosive mod
-	bool					SysCmdSpawn;
-	idVec3					SysCmdSpawnOrg;
-	idMat3					SysCmdSpawnAxis;
+	//Crafting
+	void CraftItem();
+	//END
+	
+
 
 	rvWeapon*						weapon;
 	idEntityPtr<rvViewWeapon>		weaponViewModel;

@@ -1139,10 +1139,6 @@ void Cmd_Spawn_f( const idCmdArgs &args ) {
 		common->Printf("Spawn Loot\n");
 		org = player->lootOrigin;
 	}
-	else if(player->SysCmdSpawn){
-		common->Printf("Spawn Rocket from Explode Mod\n");
-		org = player->SysCmdSpawnOrg;
-	}
 	else{
 		org = player->GetPhysics()->GetOrigin() + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
 	}
