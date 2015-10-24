@@ -209,7 +209,7 @@ void idInventory::Clear( void ) {
 	ggMetals = ggLightning = ggExplosive = ggOrbital = Turrets = 0;
 	haveLightning =	haveOrbital = haveExplosive = false;
 	selectedMetal = selectedLightning = selectedExplosive = selectedOrbital = false;
-	enableLightning = enableOrbital = enableExplosive = TurretEnabled = true;
+	enableLightning = enableOrbital = enableExplosive = TurretEnabled = false;
 
 	//END
 	memset( ammo, 0, sizeof( ammo ) );
@@ -338,9 +338,8 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	const char	*name;
 
 	//We might not need to clear it out.
-	//DOUBLE G SWAG HERE. I need to clear this out because I'm not gonna save
-	Clear();
-	//END
+	//Clear();
+
 
 	// health/armor
 	maxHealth		= dict.GetInt( "maxhealth", "100" );
@@ -3404,6 +3403,12 @@ setting stats on hud to match our inventory
 void idPlayer::UpdateItemStats ( idUserInterface *_hud)
 {
 	//update stats. Let the impulse call enable / disable for 
+	//updates if craft item was selected
+	_hud->SetStateBool("SelectedMetal", inventory.selectedMetal);
+	_hud->SetStateBool("SelectedLightning", inventory.selectedLightning);
+	_hud->SetStateBool("SelectedExplosive", inventory.selectedExplosive);
+	_hud->SetStateBool("SelectedOrbital", inventory.selectedOrbital);
+	_hud->SetStateBool("SelectedTurret", inventory.selectedTurret);
 	//gui changes
 	_hud->SetStateBool("haveLightning", inventory.haveLightning);
 	_hud->SetStateBool("haveOrbital", inventory.haveOrbital);
@@ -3424,6 +3429,7 @@ void idPlayer::UpdateItemStats ( idUserInterface *_hud)
 	_hud->HandleNamedEvent("updateLightningMod");
 	_hud->HandleNamedEvent("updateExplosiveMod");
 	_hud->HandleNamedEvent("updateOrbitalMod");
+	_hud->HandleNamedEvent("updateTurrets");
 	
 }
 
@@ -8749,26 +8755,31 @@ void idPlayer::PerformImpulse( int impulse ) {
 		//orbital mod
 		case IMPULSE_45: {
 			common->Printf("Testing 45. Orbital Mod \n");
-			inventory.enableOrbital = !inventory.enableOrbital;
+			if(inventory.haveOrbital){
+				inventory.enableOrbital = !inventory.enableOrbital;
+			}
 			break;
 		}//explosive mod
 		case IMPULSE_46: {
 
 			common->Printf("Testing 45. Explosive Mod \n");
-			inventory.enableExplosive = !inventory.enableExplosive;
+			if(inventory.haveExplosive){
+				inventory.enableExplosive = !inventory.enableExplosive;
 
-			if(inventory.enableExplosive){
-				common->Printf("Calling GiveWeaponMod");
-				GiveWeaponMod("weaponmod_explosive");
-				GiveWeaponMods(1);
+				if(inventory.enableExplosive){
+					common->Printf("Calling GiveWeaponMod");
+					GiveWeaponMod("weaponmod_explosive");
+					GiveWeaponMods(1);
+				}
+				common->Printf("GiveWeaponMod Finished");
 			}
-			common->Printf("GiveWeaponMod Finished");
-
 			break;
 		}//lightning mod.
 		case IMPULSE_47: {
 			common->Printf("Testing 47 \n");
-			inventory.enableLightning = !inventory.enableLightning;
+			if(inventory.haveLightning){
+				inventory.enableLightning = !inventory.enableLightning;
+			}
 			break;
 		}//craft turret
 		case IMPULSE_48: {
@@ -8777,7 +8788,23 @@ void idPlayer::PerformImpulse( int impulse ) {
 			break;
 		}
 		case IMPULSE_49: {
-			common->Printf("Testing 49 \n");
+			if(inventory.Turrets >= 1){
+				if(inventory.enableExplosive)
+				{
+					common->Printf("Spawning Rocket monster_turret\n");
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_rocket",false));
+				}
+				else if(inventory.enableOrbital)
+				{
+					common->Printf("Spawning Flying monster_turret\n");
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_flying",false));
+				}
+				else{
+					common->Printf("Spawning monster_turret\n");
+					Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
+				}
+				inventory.Turrets -= 1;
+			}
 			break;
 		}
 		
@@ -8872,17 +8899,12 @@ void idPlayer::CraftItem()
 		{
 			if(inventory.ggMetals >= 5)
 			{
-				if(inventory.enableExplosive)
-					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_rocket",false));
-				else if(inventory.enableOrbital)
-					Cmd_Spawn_f(idCmdArgs("spawn monster_turret_flying", false));
-				else
-					Cmd_Spawn_f(idCmdArgs("spawn monster_turret",false));
-
+				inventory.Turrets  += 1;
 				inventory.ggMetals -= 5;
 			}
 			else
 				common->Printf("Not enough metals to craft turret. Need at least 5\n");
+
 			inventory.selectedMetal = inventory.selectedTurret = false;
 		}
 
@@ -8923,6 +8945,8 @@ void idPlayer::CraftItem()
 			}
 		}
 	}
+	UpdateItemStats( hud );
+	return;
 
 }
 
